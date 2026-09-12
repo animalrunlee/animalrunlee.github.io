@@ -221,7 +221,7 @@ body{
 .sel-title-row .btn-portal-inline{position:absolute;right:0;top:50%;transform:translateY(-50%)}
 
 /* ── Race screen ── */
-.screen-race{overflow:hidden;padding-bottom:0;touch-action:none;position:relative;display:flex;align-items:center;justify-content:center}
+.screen-race{overflow:hidden;padding-bottom:0;touch-action:none;position:relative;align-items:center;justify-content:center}
 .canvas-wrap{
   position:relative;width:100%;max-width:calc(100vw*16/9);
   aspect-ratio:16/9;flex:none;
@@ -230,18 +230,6 @@ body{
   -webkit-tap-highlight-color:transparent;
 }
 .canvas-wrap canvas{display:block;width:100%;height:100%}
-.hud{
-  position:absolute;top:var(--space-2);left:50%;transform:translateX(-50%);
-  z-index:10;pointer-events:none;
-}
-.hud-chip{
-  background:rgba(255,255,255,0.95);border:2px solid var(--border);border-radius:999px;
-  padding:var(--space-1) var(--space-4);font-weight:var(--weight-extrabold);
-  font-size:var(--text-lg);color:var(--text);line-height:1.2;box-shadow:var(--shadow-sm);
-  font-variant-numeric:tabular-nums;white-space:nowrap;
-}
-.hud-chip .chip-label{font-size:var(--text-xs);color:var(--text-muted);font-weight:var(--weight-bold);margin-right:var(--space-1)}
-
 .countdown-overlay{
   position:absolute;inset:0;z-index:20;
   display:flex;align-items:center;justify-content:center;
@@ -338,7 +326,6 @@ button:focus-visible{outline:3px solid var(--accent-animalrun);outline-offset:2p
     <section id="screenRace" class="screen screen-race" aria-label="경주 화면">
       <div class="canvas-wrap" id="canvasWrap">
         <canvas id="raceCanvas" aria-label="동물 경주 화면. 선택한 동물들이 결승선을 향해 달립니다."></canvas>
-        <div class="hud"><span id="hudChip" class="hud-chip"><span class="chip-label">시간</span><span id="hudTime">00:00</span></span></div>
         <div id="countdownOverlay" class="countdown-overlay" hidden><div id="countdownNum" class="countdown-num">3</div></div>
       </div>
     </section>
@@ -395,7 +382,6 @@ var btnStart = document.getElementById('btnStart');
 var canvasWrap = document.getElementById('canvasWrap');
 var gameCanvas = document.getElementById('raceCanvas');
 var ctx = gameCanvas.getContext('2d');
-var hudTime = document.getElementById('hudTime');
 var countdownOverlay = document.getElementById('countdownOverlay');
 var countdownNum = document.getElementById('countdownNum');
 var modalResult = document.getElementById('modalResult');
@@ -963,7 +949,6 @@ function raceLoop(ts) {
   raceElapsed = ts - raceT0;
   updateRacers(ts);
   renderRace();
-  hudTime.textContent = formatTime(raceElapsed);
   if (raceState === 'running') {
     rafId = requestAnimationFrame(raceLoop);
   }
@@ -1223,12 +1208,6 @@ function getAnimal(id) {
     if (ANIMALS[i].id === id) return ANIMALS[i];
   }
   return null;
-}
-function formatTime(ms) {
-  var sec = Math.floor(ms / 1000);
-  var cs = Math.floor((ms % 1000) / 100);
-  if (sec < 10) sec = '0' + sec;
-  return sec + '.' + cs;
 }
 function showScreen(el) {
   screenSelect.classList.remove('show');
