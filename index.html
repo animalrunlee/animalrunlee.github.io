@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FFEDD5">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>아빠의 동물달리기 - 무료 동물 경주 게임</title>
+<meta name="description" content="아빠의 동물달리기 - 요시, 양, 당나귀, 거북이, 펭귄, 호랑이, 늑대, 곰, 사자, 고릴라 중 2마리 이상 골라 완전 랜덤 경주를 즐기세요! 약 10초 안에 엎치락뒷치락 박빙의 승부가 펼쳐집니다.">
+<link rel="canonical" href="https://animalrunlee.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="아빠의 동물달리기 - 무료 동물 경주 게임">
+<meta property="og:description" content="10마리 동물 중 골라 달리세요! 완전 랜덤 박빙의 경주, 누가 이길지 아무도 몰라요.">
+<meta property="og:url" content="https://animalrunlee.github.io/">
+<meta property="og:site_name" content="아빠의 동물달리기">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://animalrunlee.github.io/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="아빠의 동물달리기 로고">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="아빠의 동물달리기 - 무료 동물 경주 게임">
+<meta name="twitter:description" content="10마리 동물 중 골라 달리세요! 완전 랜덤 박빙의 경주.">
+<meta name="twitter:image" content="https://animalrunlee.github.io/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "아빠의 동물달리기",
+  "url": "https://animalrunlee.github.io/",
+  "description": "10마리 동물을 골라 완전 랜덤 경주를 즐기는 게임",
+  "inLanguage": "ko"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "아빠의 동물달리기",
+  "url": "https://animalrunlee.github.io/",
+  "description": "요시, 양, 당나귀, 거북이, 펭귄, 호랑이, 늑대, 곰, 사자, 고릴라 중 2마리 이상을 골라 약 10초 동안 완전 랜덤 경주를 즐기는 게임.",
+  "inLanguage": "ko",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "featureList": ["10종 동물 선택", "완전 랜덤 경주", "엎치락뒷치락 박빙 승부", "모바일 가로 화면 자동 회전"]
+}
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FFFFFF;
+  --surface:#FFFFFF;
+  --surface-raised:#F3F4F6;
+  --border:#374151;
+  --border-thin:#9CA3AF;
+  --border-thick:#1F2937;
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --primary-ring:rgba(37,99,235,0.35);
+  --error:#DC2626;
+  --error-bg:#FEE2E2;
+  --success:#059669;
+  --success-bg:#D1FAE5;
+  --warning:#D97706;
+  --warning-bg:#FEF3C7;
+  --text:#1F2937;
+  --text-secondary:#374151;
+  --text-muted:#6B7280;
+  --accent-animalrun:#EA580C;
+  --accent-animalrun-bg:#FFEDD5;
+  --space-1:4px;
+  --space-2:8px;
+  --space-3:12px;
+  --space-4:16px;
+  --space-5:20px;
+  --space-6:24px;
+  --space-8:32px;
+  --space-10:40px;
+  --font-family:-apple-system,BlinkMacSystemFont,'Malgun Gothic','맑은 고딕',sans-serif;
+  --text-xs:13px;
+  --text-sm:15px;
+  --text-base:18px;
+  --text-lg:22px;
+  --text-xl:26px;
+  --text-2xl:30px;
+  --text-3xl:38px;
+  --weight-regular:400;
+  --weight-medium:500;
+  --weight-semibold:600;
+  --weight-bold:700;
+  --weight-extrabold:800;
+  --line-height:1.6;
+  --touch-min:56px;
+  --btn-radius:12px;
+  --radius:12px;
+  --radius-sm:8px;
+  --radius-lg:20px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.10);
+  --shadow-md:0 2px 8px rgba(0,0,0,0.12);
+  --shadow-lg:0 4px 16px rgba(0,0,0,0.14);
+  --transition-fast:150ms ease;
+  --transition-base:200ms ease;
+}
+html{
+  touch-action:manipulation;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-text-size-adjust:100%;
+}
+body{
+  font-family:var(--font-family);
+  background:var(--bg);
+  color:var(--text);
+  height:100vh;height:100dvh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+  font-size:var(--text-base);
+  line-height:var(--line-height);
+  font-weight:var(--weight-regular);
+}
+#rotateWrapper{width:100%;height:100%;display:flex;flex-direction:column;min-height:0}
+
+/* ── Mobile 90 auto-rotation: portrait touch devices ── */
+@media (orientation: portrait) and (hover: none){
+  #rotateWrapper{
+    position:fixed;
+    top:50%;left:50%;
+    width:100vh;height:100vw;
+    transform:translate(-50%,-50%) rotate(90deg);
+    transform-origin:center center;
+    overflow:hidden;
+  }
+}
+@supports(padding:max(0px)){
+  #rotateWrapper{
+    padding-left:max(0px,env(safe-area-inset-top));
+    padding-right:max(0px,env(safe-area-inset-bottom));
+  }
+}
+
+.container{
+  width:100%;max-width:640px;margin:0 auto;padding:0 var(--space-3);
+  display:flex;flex-direction:column;flex:1;min-height:0;
+}
+.screen{display:none;flex-direction:column;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:max(var(--space-3),env(safe-area-inset-bottom))}
+.screen.show{display:flex}
+[hidden]{display:none !important}
+
+/* ── Selection screen ── */
+.sel-header{padding:var(--space-4) 0 var(--space-2);text-align:center;flex-shrink:0}
+.sel-title{font-size:clamp(26px,6vw,40px);font-weight:var(--weight-extrabold);color:var(--text);line-height:1.2;letter-spacing:-0.5px}
+.sel-title .accent{color:var(--accent-animalrun)}
+.sel-sub{font-size:var(--text-lg);color:var(--text-secondary);margin-top:var(--space-1);font-weight:var(--weight-bold)}
+.sel-sub small{font-size:var(--text-sm);color:var(--text-muted);font-weight:var(--weight-regular)}
+
+.animal-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:var(--space-2);
+  padding:var(--space-2) 0;
+  flex-shrink:0;
+}
+.animal-card{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-1);
+  padding:var(--space-2) var(--space-1);
+  background:var(--surface);
+  border:3px solid var(--border-thin);
+  border-radius:var(--radius);
+  min-height:96px;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:all var(--transition-fast);
+  font-family:var(--font-family);
+}
+.animal-card:active{transform:scale(0.96)}
+.animal-card .card-canvas{width:72px;height:56px;display:block}
+.animal-card .card-name{font-size:var(--text-sm);font-weight:var(--weight-bold);color:var(--text);line-height:1.2}
+.animal-card.selected{
+  border-color:var(--accent-animalrun);
+  background:var(--accent-animalrun-bg);
+  box-shadow:0 0 0 3px rgba(234,88,12,0.30);
+}
+.animal-card.selected .card-name{color:var(--accent-animalrun)}
+.animal-card:focus-visible{outline:3px solid var(--accent-animalrun);outline-offset:2px}
+
+.sel-actions{display:flex;flex-direction:column;gap:var(--space-3);padding:var(--space-2) 0;flex-shrink:0}
+.btn-start{
+  width:100%;min-height:var(--touch-min);
+  padding:var(--space-4) var(--space-5);
+  border-radius:var(--btn-radius);border:3px solid var(--accent-animalrun);
+  background:var(--accent-animalrun);color:#FFFFFF;
+  font-size:var(--text-2xl);font-weight:var(--weight-extrabold);
+  font-family:var(--font-family);cursor:pointer;
+  box-shadow:var(--shadow-md);line-height:1.3;
+  transition:all var(--transition-base);-webkit-tap-highlight-color:transparent;
+}
+.btn-start:active{background:#C2410C;transform:scale(0.98)}
+.btn-start:disabled{background:var(--surface-raised);border-color:var(--border-thin);color:var(--text-muted);cursor:not-allowed;box-shadow:none}
+.btn-start .btn-cnt{font-size:var(--text-lg);font-weight:var(--weight-bold);opacity:0.95}
+
+.btn-portal{
+  display:flex;align-items:center;justify-content:center;gap:var(--space-2);
+  width:100%;min-height:48px;padding:var(--space-3) var(--space-5);
+  border-radius:var(--btn-radius);border:2.5px solid var(--border);
+  background:var(--surface-raised);color:var(--text);font-size:var(--text-base);
+  font-weight:var(--weight-bold);font-family:var(--font-family);cursor:pointer;
+  transition:all var(--transition-base);line-height:1.2;-webkit-tap-highlight-color:transparent;
+}
+.btn-portal:active{background:var(--border-thin);transform:scale(0.98)}
+
+/* ── Race screen ── */
+.screen-race{overflow:hidden;padding-bottom:0;touch-action:none;position:relative}
+.canvas-wrap{
+  position:relative;width:100%;flex:1;min-height:0;
+  border:3px solid var(--border-thick);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);overflow:hidden;touch-action:none;
+  -webkit-tap-highlight-color:transparent;margin:var(--space-1) auto 0;
+}
+.canvas-wrap canvas{display:block;width:100%;height:100%}
+.hud{
+  position:absolute;top:var(--space-2);left:50%;transform:translateX(-50%);
+  z-index:10;pointer-events:none;
+}
+.hud-chip{
+  background:rgba(255,255,255,0.95);border:2px solid var(--border);border-radius:999px;
+  padding:var(--space-1) var(--space-4);font-weight:var(--weight-extrabold);
+  font-size:var(--text-lg);color:var(--text);line-height:1.2;box-shadow:var(--shadow-sm);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.hud-chip .chip-label{font-size:var(--text-xs);color:var(--text-muted);font-weight:var(--weight-bold);margin-right:var(--space-1)}
+
+.countdown-overlay{
+  position:absolute;inset:0;z-index:20;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.55);
+  pointer-events:none;
+}
+.countdown-num{
+  font-size:clamp(72px,24vw,150px);
+  font-weight:var(--weight-extrabold);
+  color:var(--accent-animalrun);
+  text-shadow:0 4px 20px rgba(0,0,0,0.25);
+  animation:cdPop 700ms ease forwards;
+  line-height:1;
+}
+@keyframes cdPop{
+  0%{transform:scale(0.4);opacity:0}
+  30%{transform:scale(1.15);opacity:1}
+  70%{transform:scale(1);opacity:1}
+  100%{transform:scale(1.1);opacity:0}
+}
+
+/* ── Modal ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.70);display:none;
+  justify-content:center;z-index:100;padding:var(--space-5);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+}
+.modal-overlay.show{display:flex}
+.modal{
+  position:relative;background:var(--surface);border-radius:var(--radius-lg);
+  padding:var(--space-6) var(--space-5);width:100%;max-width:420px;
+  box-shadow:0 24px 64px rgba(0,0,0,0.50);text-align:center;
+  animation:modalIn 250ms ease;border:3px solid var(--border);margin:auto;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(0.92) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal h2{font-size:clamp(20px,6vw,30px);font-weight:var(--weight-extrabold);margin-bottom:var(--space-2);color:var(--text);line-height:1.3}
+.winner-banner{
+  font-size:clamp(18px,5vw,24px);font-weight:var(--weight-extrabold);
+  color:var(--accent-animalrun);margin-bottom:var(--space-3);
+  background:var(--accent-animalrun-bg);border:2px solid var(--accent-animalrun);
+  border-radius:var(--radius);padding:var(--space-2) var(--space-3);
+}
+.result-table{display:flex;flex-direction:column;gap:var(--space-1);margin:var(--space-3) 0}
+.result-row{
+  display:flex;align-items:center;gap:var(--space-3);
+  padding:var(--space-2) var(--space-3);
+  border-radius:var(--radius-sm);
+  font-size:var(--text-lg);font-weight:var(--weight-bold);
+}
+.result-row:nth-child(odd){background:var(--surface-raised)}
+.result-row.gold{background:#FEF3C7;border:2px solid #F59E0B}
+.result-row.silver{background:#F1F5F9;border:2px solid #94A3B8}
+.result-row.bronze{background:#FFEDD5;border:2px solid #D97706}
+.rank-medal{width:44px;flex-shrink:0;text-align:center;font-size:var(--text-xl);font-weight:var(--weight-extrabold);color:var(--text-secondary)}
+.row-canvas{width:44px;height:34px;flex-shrink:0;display:block}
+.row-name{flex:1;text-align:left;font-size:var(--text-lg);line-height:1.2}
+.row-time{font-size:var(--text-sm);color:var(--text-muted);font-weight:var(--weight-semibold);white-space:nowrap;font-variant-numeric:tabular-nums}
+.modal-actions{display:flex;flex-direction:column;gap:var(--space-3);margin-top:var(--space-4)}
+.btn{
+  width:100%;min-height:var(--touch-min);padding:var(--space-4) var(--space-5);border-radius:var(--btn-radius);
+  font-size:var(--text-lg);font-weight:var(--weight-bold);
+  font-family:var(--font-family);cursor:pointer;transition:all var(--transition-base);
+  line-height:1.3;-webkit-tap-highlight-color:transparent;
+}
+.btn-primary{background:var(--accent-animalrun);color:#FFFFFF;border:3px solid var(--accent-animalrun)}
+.btn-primary:active{background:#C2410C;transform:scale(0.97)}
+.btn-secondary{background:var(--surface);color:var(--text);border:2.5px solid var(--border)}
+.btn-secondary:active{background:var(--surface-raised);transform:scale(0.97)}
+
+button:focus-visible{outline:3px solid var(--accent-animalrun);outline-offset:2px}
+::-webkit-scrollbar{display:none}
+</style>
+</head>
+<body>
+
+<div id="rotateWrapper">
+  <div class="container">
+
+    <!-- Screen: Selection -->
+    <section id="screenSelect" class="screen show" aria-label="동물 선택 화면">
+      <div class="sel-header">
+        <h1 class="sel-title">🐾 <span class="accent">동물 경주</span></h1>
+        <p class="sel-sub">2마리 이상 골라서 달려요!<br><small>완전 랜덤 · 누가 이길지 아무도 몰라요</small></p>
+      </div>
+      <div id="animalGrid" class="animal-grid"></div>
+      <div class="sel-actions">
+        <button id="btnStart" class="btn-start" type="button" disabled><span class="btn-cnt">경주 시작!</span></button>
+        <button class="btn-portal" type="button">🎮 다른 게임하기</button>
+      </div>
+    </section>
+
+    <!-- Screen: Race -->
+    <section id="screenRace" class="screen screen-race" aria-label="경주 화면">
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="raceCanvas" aria-label="동물 경주 화면. 선택한 동물들이 결승선을 향해 달립니다."></canvas>
+        <div class="hud"><span id="hudChip" class="hud-chip"><span class="chip-label">시간</span><span id="hudTime">00:00</span></span></div>
+        <div id="countdownOverlay" class="countdown-overlay" hidden><div id="countdownNum" class="countdown-num">3</div></div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Modal: Result -->
+  <div id="modalResult" class="modal-overlay" role="dialog" aria-modal="true" aria-label="경주 결과">
+    <div class="modal">
+      <h2>🏁 경주 결과</h2>
+      <div id="winnerBanner" class="winner-banner"></div>
+      <div id="resultTable" class="result-table"></div>
+      <div class="modal-actions">
+        <button id="btnRetry" class="btn btn-primary" type="button">🔄 다시하기</button>
+        <button id="btnNewSel" class="btn btn-secondary" type="button">🐾 새로 고르기</button>
+        <button class="btn-portal" type="button">🎮 다른 게임하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══════════════════════════════════════
+   CONSTANTS
+   ═══════════════════════════════════════ */
+var PORTAL_URL = 'https://appa-games.github.io/';
+var COUNTDOWN_MS = 700;
+var LEG_SWAP_MS = 90;
+var MAX_RACE_MS = 22000;
+
+var ANIMALS = [
+  { id:'yoshi',   name:'요시',   color:'#22C55E', paint:null },
+  { id:'sheep',   name:'양',     color:'#F5F5F5', paint:null },
+  { id:'donkey',  name:'당나귀', color:'#A8A29E', paint:null },
+  { id:'turtle',  name:'거북이', color:'#65A30D', paint:null },
+  { id:'penguin', name:'펭귄',   color:'#1F2937', paint:null },
+  { id:'tiger',   name:'호랑이', color:'#EA580C', paint:null },
+  { id:'wolf',    name:'늑대',   color:'#6B7280', paint:null },
+  { id:'bear',    name:'곰',     color:'#92400E', paint:null },
+  { id:'lion',    name:'사자',   color:'#EAB308', paint:null },
+  { id:'gorilla', name:'고릴라', color:'#374151', paint:null }
+];
+
+/* ═══════════════════════════════════════
+   DOM REFERENCES
+   ═══════════════════════════════════════ */
+var screenSelect = document.getElementById('screenSelect');
+var screenRace = document.getElementById('screenRace');
+var animalGrid = document.getElementById('animalGrid');
+var btnStart = document.getElementById('btnStart');
+var canvasWrap = document.getElementById('canvasWrap');
+var gameCanvas = document.getElementById('raceCanvas');
+var ctx = gameCanvas.getContext('2d');
+var hudTime = document.getElementById('hudTime');
+var countdownOverlay = document.getElementById('countdownOverlay');
+var countdownNum = document.getElementById('countdownNum');
+var modalResult = document.getElementById('modalResult');
+var winnerBanner = document.getElementById('winnerBanner');
+var resultTable = document.getElementById('resultTable');
+var btnRetry = document.getElementById('btnRetry');
+var btnNewSel = document.getElementById('btnNewSel');
+
+/* ═══════════════════════════════════════
+   CANVAS DRAW HELPERS
+   ═══════════════════════════════════════ */
+function rr(ctx2, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  ctx2.beginPath();
+  ctx2.moveTo(x + r, y);
+  ctx2.arcTo(x + w, y, x + w, y + h, r);
+  ctx2.arcTo(x + w, y + h, x, y + h, r);
+  ctx2.arcTo(x, y + h, x, y, r);
+  ctx2.arcTo(x, y, x + w, y, r);
+  ctx2.closePath();
+}
+function fillRR(ctx2, x, y, w, h, r, color) {
+  ctx2.fillStyle = color;
+  rr(ctx2, x, y, w, h, r);
+  ctx2.fill();
+}
+function eye(ctx2, x, y, r) {
+  ctx2.fillStyle = '#FFFFFF';
+  ctx2.beginPath();
+  ctx2.arc(x, y, r, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#111827';
+  ctx2.beginPath();
+  ctx2.arc(x + r * 0.30, y - r * 0.10, r * 0.55, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#FFFFFF';
+  ctx2.beginPath();
+  ctx2.arc(x + r * 0.55, y - r * 0.35, r * 0.20, 0, Math.PI * 2);
+  ctx2.fill();
+}
+function legPair(ctx2, w, h, color, spread, frame) {
+  var backX = -spread;
+  var frontX = spread;
+  var backY = frame === 0 ? 2 : 0;
+  var frontY = frame === 0 ? 0 : 2;
+  fillRR(ctx2, backX - w / 2, 2 + backY, w, h - 2 - backY, w / 2, color);
+  fillRR(ctx2, frontX - w / 2, 2 + frontY, w, h - 2 - frontY, w / 2, color);
+}
+
+/* ═══════════════════════════════════════
+   10 ANIMAL SPRITES (side view, facing right)
+   Ground baseline = +17, draw around origin
+   ═══════════════════════════════════════ */
+function paintYoshi(ctx2, f) {
+  fillRR(ctx2, -15, -13, 30, 22, 11, '#22C55E');
+  fillRR(ctx2, -5, -5, 22, 16, 8, '#FEF7C3');
+  ctx2.fillStyle = '#22C55E';
+  ctx2.beginPath();
+  ctx2.ellipse(10, -16, 11, 9, 0.15, 0, Math.PI * 2);
+  ctx2.fill();
+  fillRR(ctx2, 17, -13, 8, 8, 4, '#F97316');
+  ctx2.beginPath();
+  ctx2.arc(18.5, -9.5, 2, 0, Math.PI * 2);
+  ctx2.fillStyle = '#7C2D12';
+  ctx2.fill();
+  eye(ctx2, 7, -18, 3.2);
+  fillRR(ctx2, 2, -6, 8, 5, 2.5, '#16A34A');
+  legPair(ctx2, 7, 17, '#22C55E', 9, f);
+  fillRR(ctx2, -13.5, 12, 7, 5, 2, '#F97316');
+  fillRR(ctx2, 4.5, 12, 7, 5, 2, '#F97316');
+}
+function paintSheep(ctx2, f) {
+  var wool = [[-13, -3, 9], [0, -9, 11], [13, -2, 9], [6, -1, 10], [-5, 3, 9], [12, 3, 8], [-1, 5, 10]];
+  ctx2.fillStyle = '#FFFFFF';
+  for (var i = 0; i < wool.length; i++) {
+    ctx2.beginPath();
+    ctx2.arc(wool[i][0], wool[i][1], wool[i][2], 0, Math.PI * 2);
+    ctx2.fill();
+  }
+  fillRR(ctx2, 11, -11, 13, 13, 6, '#374151');
+  ctx2.fillStyle = '#FFFFFF';
+  ctx2.beginPath();
+  ctx2.arc(19, -7.5, 2.1, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#111827';
+  ctx2.beginPath();
+  ctx2.arc(19.8, -7.3, 1, 0, Math.PI * 2);
+  ctx2.fill();
+  fillRR(ctx2, 10, 1, 6, 7, 3, '#F3F4F6');
+  legPair(ctx2, 4.5, 16, '#9CA3AF', 8.5, f);
+}
+function paintDonkey(ctx2, f) {
+  fillRR(ctx2, -15, -10, 28, 19, 9, '#A8A29E');
+  fillRR(ctx2, -7, -4, 18, 13, 6, '#E7E5E4');
+  ctx2.fillStyle = '#A8A29E';
+  ctx2.beginPath();
+  ctx2.ellipse(12, -12, 8, 7, 0.1, 0, Math.PI * 2);
+  ctx2.fill();
+  fillRR(ctx2, 16, -14, 7, 6, 2.5, '#D6D3D1');
+  fillRR(ctx2, 6, -25, 4, 12, 2, '#A8A29E');
+  fillRR(ctx2, 14, -25, 4, 12, 2, '#A8A29E');
+  fillRR(ctx2, 6, -25, 4, 5, 2, '#D6D3D1');
+  fillRR(ctx2, -13, -18, 17, 5, 2.5, '#57534E');
+  eye(ctx2, 12, -14, 2.5);
+  fillRR(ctx2, -19, -6, 3, 11, 1.5, '#78716C');
+  legPair(ctx2, 4, 16, '#78716C', 9, f);
+}
+function paintTurtle(ctx2, f) {
+  fillRR(ctx2, -13, -3, 30, 14, 7, '#7C8B3F');
+  legPair(ctx2, 5.5, 16, '#7C8B3F', 10, f);
+  ctx2.fillStyle = '#65A30D';
+  ctx2.beginPath();
+  ctx2.arc(0, -5, 15, Math.PI, 0);
+  ctx2.closePath();
+  ctx2.fill();
+  ctx2.strokeStyle = '#4D7C0F';
+  ctx2.lineWidth = 1.6;
+  ctx2.beginPath();
+  ctx2.moveTo(-15, -5);
+  ctx2.lineTo(-15, -3);
+  ctx2.moveTo(15, -5);
+  ctx2.lineTo(15, -3);
+  ctx2.moveTo(0, -20);
+  ctx2.lineTo(0, -5);
+  ctx2.moveTo(-9, -15);
+  ctx2.lineTo(9, -15);
+  ctx2.stroke();
+  ctx2.strokeStyle = '#3F6212';
+  ctx2.lineWidth = 2;
+  ctx2.beginPath();
+  ctx2.moveTo(-15, -3);
+  ctx2.quadraticCurveTo(0, -23, 15, -3);
+  ctx2.stroke();
+  fillRR(ctx2, 12, -11, 10, 9, 4.5, '#7C8B3F');
+  eye(ctx2, 16, -8, 2.2);
+  fillRR(ctx2, 20, -9, 5, 4, 2, '#65A30D');
+}
+function paintPenguin(ctx2, f) {
+  ctx2.fillStyle = '#1F2937';
+  ctx2.beginPath();
+  ctx2.ellipse(0, -5, 14, 16, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#FFFFFF';
+  ctx2.beginPath();
+  ctx2.ellipse(6, -3, 9, 12, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#F97316';
+  ctx2.beginPath();
+  ctx2.moveTo(15, -9);
+  ctx2.lineTo(23, -6);
+  ctx2.lineTo(15, -3);
+  ctx2.closePath();
+  ctx2.fill();
+  eye(ctx2, 12, -9, 2.6);
+  fillRR(ctx2, 3, 3, 5, 11, 2.5, '#111827');
+  fillRR(ctx2, -10, 12, 9, 4.5, 2, '#F97316');
+  fillRR(ctx2, 6, 12, 9, 4.5, 2, '#F97316');
+}
+function paintTiger(ctx2, f) {
+  ctx2.fillStyle = '#EA580C';
+  ctx2.beginPath();
+  ctx2.ellipse(0, -6, 18, 12, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#FFF7ED';
+  ctx2.beginPath();
+  ctx2.ellipse(6, -2, 10, 9, 0.2, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.strokeStyle = '#1F2937';
+  ctx2.lineWidth = 3;
+  ctx2.beginPath();
+  ctx2.moveTo(-10, -14);
+  ctx2.quadraticCurveTo(-8, -7, -10, 0);
+  ctx2.moveTo(-4, -15);
+  ctx2.quadraticCurveTo(-2, -7, -4, 1);
+  ctx2.moveTo(3, -14);
+  ctx2.quadraticCurveTo(5, -7, 3, 1);
+  ctx2.stroke();
+  ctx2.strokeStyle = '#EA580C';
+  ctx2.lineWidth = 4;
+  ctx2.beginPath();
+  ctx2.moveTo(-16, -8);
+  ctx2.quadraticCurveTo(-24, -6, -27, -1);
+  ctx2.stroke();
+  ctx2.fillStyle = '#1F2937';
+  ctx2.beginPath();
+  ctx2.arc(-27.5, -1, 3, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#EA580C';
+  ctx2.beginPath();
+  ctx2.ellipse(15, -13, 8, 7, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  fillRR(ctx2, 10, -21, 4.5, 4.5, 2, '#EA580C');
+  fillRR(ctx2, 18, -21, 4.5, 4.5, 2, '#EA580C');
+  eye(ctx2, 16, -14, 2.5);
+  fillRR(ctx2, 19, -11, 5.5, 4.5, 2, '#FFF7ED');
+  fillRR(ctx2, 22, -11, 3.5, 2.6, 1.2, '#431407');
+  legPair(ctx2, 6, 16, '#EA580C', 10, f);
+  fillRR(ctx2, -13, 12, 6.5, 4, 2, '#7C2D12');
+  fillRR(ctx2, 7, 12, 6.5, 4, 2, '#7C2D12');
+}
+function paintWolf(ctx2, f) {
+  ctx2.fillStyle = '#6B7280';
+  ctx2.beginPath();
+  ctx2.ellipse(0, -5, 17, 11, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#9CA3AF';
+  ctx2.beginPath();
+  ctx2.ellipse(5, -2, 10, 8, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#4B5563';
+  ctx2.beginPath();
+  ctx2.ellipse(-20, -9, 7, 4.5, 0.4, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#6B7280';
+  ctx2.beginPath();
+  ctx2.ellipse(13, -13, 8, 6.5, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.beginPath();
+  ctx2.moveTo(7, -18);
+  ctx2.lineTo(9, -26);
+  ctx2.lineTo(13, -18);
+  ctx2.closePath();
+  ctx2.fill();
+  ctx2.beginPath();
+  ctx2.moveTo(15, -18);
+  ctx2.lineTo(18, -25);
+  ctx2.lineTo(21, -17);
+  ctx2.closePath();
+  ctx2.fillStyle = '#4B5563';
+  ctx2.fill();
+  fillRR(ctx2, 17, -14, 9, 5.5, 2, '#9CA3AF');
+  fillRR(ctx2, 24, -15, 3.5, 3, 1.2, '#111827');
+  eye(ctx2, 14, -14, 2.2);
+  ctx2.fillStyle = '#FFFFFF';
+  ctx2.beginPath();
+  ctx2.moveTo(18, -9);
+  ctx2.lineTo(20, -7);
+  ctx2.lineTo(22, -9);
+  ctx2.lineTo(24, -7);
+  ctx2.lineTo(24, -9);
+  ctx2.closePath();
+  ctx2.fill();
+  legPair(ctx2, 5, 16, '#4B5563', 9.5, f);
+}
+function paintBear(ctx2, f) {
+  ctx2.fillStyle = '#92400E';
+  ctx2.beginPath();
+  ctx2.ellipse(0, -7, 17, 13, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#B45309';
+  ctx2.beginPath();
+  ctx2.ellipse(6, -3, 11, 9, 0.1, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#92400E';
+  ctx2.beginPath();
+  ctx2.ellipse(15, -13, 8, 7, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.beginPath();
+  ctx2.arc(9, -19, 3.2, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.beginPath();
+  ctx2.arc(20, -19, 3.2, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#FDE68A';
+  ctx2.beginPath();
+  ctx2.arc(9, -19, 1.5, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.beginPath();
+  ctx2.arc(20, -19, 1.5, 0, Math.PI * 2);
+  ctx2.fill();
+  eye(ctx2, 16, -13, 2.3);
+  ctx2.fillStyle = '#B45309';
+  ctx2.beginPath();
+  ctx2.arc(20, -11, 3.2, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#111827';
+  ctx2.beginPath();
+  ctx2.arc(21, -12, 1.3, 0, Math.PI * 2);
+  ctx2.fill();
+  legPair(ctx2, 7, 16, '#92400E', 9, f);
+  fillRR(ctx2, -12, 11, 9, 5.5, 2.5, '#78350F');
+  fillRR(ctx2, 7, 11, 9, 5.5, 2.5, '#78350F');
+}
+function paintLion(ctx2, f) {
+  ctx2.fillStyle = '#B45309';
+  ctx2.beginPath();
+  ctx2.arc(15, -14, 10.5, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#EAB308';
+  ctx2.beginPath();
+  ctx2.ellipse(0, -6, 18, 11, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#FEF3C7';
+  ctx2.beginPath();
+  ctx2.ellipse(5, -2, 10, 8, 0.1, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#EAB308';
+  ctx2.beginPath();
+  ctx2.arc(15, -14, 7, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#B45309';
+  ctx2.beginPath();
+  ctx2.arc(10, -20, 2.8, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.beginPath();
+  ctx2.arc(20, -20, 2.8, 0, Math.PI * 2);
+  ctx2.fill();
+  eye(ctx2, 16, -14, 2.4);
+  ctx2.fillStyle = '#FEF3C7';
+  ctx2.beginPath();
+  ctx2.arc(19, -11, 3.2, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#92400E';
+  ctx2.beginPath();
+  ctx2.arc(20, -12, 1.3, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.strokeStyle = '#EAB308';
+  ctx2.lineWidth = 4;
+  ctx2.beginPath();
+  ctx2.moveTo(-16, -7);
+  ctx2.quadraticCurveTo(-24, -5, -27, -2);
+  ctx2.stroke();
+  ctx2.fillStyle = '#92400E';
+  ctx2.beginPath();
+  ctx2.arc(-27.5, -2, 3.2, 0, Math.PI * 2);
+  ctx2.fill();
+  legPair(ctx2, 7, 16, '#EAB308', 9.5, f);
+  fillRR(ctx2, -12, 12, 9, 4, 2, '#A16207');
+  fillRR(ctx2, 8, 12, 9, 4, 2, '#A16207');
+}
+function paintGorilla(ctx2, f) {
+  ctx2.fillStyle = '#374151';
+  ctx2.beginPath();
+  ctx2.ellipse(0, -7, 20, 12, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#4B5563';
+  ctx2.beginPath();
+  ctx2.ellipse(4, -2, 13, 10, 0.05, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#374151';
+  ctx2.beginPath();
+  ctx2.ellipse(15, -13, 7, 6, 0, 0, Math.PI * 2);
+  ctx2.fill();
+  fillRR(ctx2, 9, -17, 11, 4.5, 2, '#1F2937');
+  ctx2.fillStyle = '#FFFFFF';
+  ctx2.beginPath();
+  ctx2.arc(14, -13, 2.1, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.fillStyle = '#111827';
+  ctx2.beginPath();
+  ctx2.arc(14.7, -12.8, 1, 0, Math.PI * 2);
+  ctx2.fill();
+  fillRR(ctx2, 18, -11, 4.5, 3.2, 1.5, '#111827');
+  fillRR(ctx2, 18, -7, 5, 3.2, 1.5, '#1F2937');
+  fillRR(ctx2, -16, -3, 6, 13, 3, '#1F2937');
+  fillRR(ctx2, 5, -3, 6, 13, 3, '#1F2937');
+  ctx2.fillStyle = '#374151';
+  ctx2.beginPath();
+  ctx2.arc(-13, 11, 3, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.beginPath();
+  ctx2.arc(8, 11, 3, 0, Math.PI * 2);
+  ctx2.fill();
+  legPair(ctx2, 7, 16, '#1F2937', 7, f);
+}
+
+ANIMALS[0].paint = paintYoshi;
+ANIMALS[1].paint = paintSheep;
+ANIMALS[2].paint = paintDonkey;
+ANIMALS[3].paint = paintTurtle;
+ANIMALS[4].paint = paintPenguin;
+ANIMALS[5].paint = paintTiger;
+ANIMALS[6].paint = paintWolf;
+ANIMALS[7].paint = paintBear;
+ANIMALS[8].paint = paintLion;
+ANIMALS[9].paint = paintGorilla;
+
+function drawSprite(canvas2, animal, legFrame) {
+  var ctx2 = canvas2.getContext('2d');
+  var w = canvas2.width;
+  var h = canvas2.height;
+  ctx2.clearRect(0, 0, w, h);
+  var s = Math.min(w, h) / 52;
+  ctx2.save();
+  ctx2.translate(w / 2, h - 3);
+  ctx2.scale(s, s);
+  animal.paint(ctx2, legFrame);
+  ctx2.restore();
+}
+
+/* ═══════════════════════════════════════
+   SELECTION SCREEN
+   ═══════════════════════════════════════ */
+var selected = {};
+var miniCanvases = [];
+
+function buildSelection() {
+  animalGrid.innerHTML = '';
+  miniCanvases = [];
+  for (var i = 0; i < ANIMALS.length; i++) {
+    (function(idx) {
+      var a = ANIMALS[idx];
+      var card = document.createElement('div');
+      card.className = 'animal-card';
+      card.setAttribute('data-id', a.id);
+      card.tabIndex = 0;
+      var cv = document.createElement('canvas');
+      cv.className = 'card-canvas';
+      cv.width = 72;
+      cv.height = 56;
+      var nm = document.createElement('span');
+      nm.className = 'card-name';
+      nm.textContent = a.name;
+      card.appendChild(cv);
+      card.appendChild(nm);
+      card.addEventListener('click', function() {
+        toggleSelect(a.id);
+      });
+      card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleSelect(a.id);
+        }
+      });
+      animalGrid.appendChild(card);
+      drawSprite(cv, a, 0);
+      miniCanvases.push({ cv: cv, animal: a });
+    })(i);
+  }
+  selected = {};
+  toggleSelect('yoshi');
+  toggleSelect('sheep');
+  updateStartButton();
+}
+
+function toggleSelect(id) {
+  if (selected[id]) {
+    delete selected[id];
+  } else {
+    selected[id] = true;
+  }
+  var cards = animalGrid.querySelectorAll('.animal-card');
+  for (var i = 0; i < cards.length; i++) {
+    var cid = cards[i].getAttribute('data-id');
+    if (selected[cid]) {
+      cards[i].classList.add('selected');
+    } else {
+      cards[i].classList.remove('selected');
+    }
+  }
+  updateStartButton();
+}
+
+function updateStartButton() {
+  var n = Object.keys(selected).length;
+  var cntEl = btnStart.querySelector('.btn-cnt');
+  if (n === 0) {
+    cntEl.textContent = '경주 시작!';
+    btnStart.disabled = true;
+  } else if (n === 1) {
+    cntEl.textContent = '1마리 더 고르세요';
+    btnStart.disabled = true;
+  } else {
+    cntEl.textContent = '경주 시작! (' + n + '마리)';
+    btnStart.disabled = false;
+  }
+}
+
+var miniLegFrame = 0;
+var miniTimer = null;
+function startMiniAnimation() {
+  if (miniTimer) return;
+  miniTimer = setInterval(function() {
+    miniLegFrame = miniLegFrame === 0 ? 1 : 0;
+    for (var i = 0; i < miniCanvases.length; i++) {
+      drawSprite(miniCanvases[i].cv, miniCanvases[i].animal, miniLegFrame);
+    }
+  }, 180);
+}
+
+/* ═══════════════════════════════════════
+   RACE ENGINE
+   ═══════════════════════════════════════ */
+var racers = [];
+var raceState = 'idle';
+var raceT0 = 0;
+var raceElapsed = 0;
+var baseSpeed = 0;
+var legFrame = 0;
+var lastLegSwap = 0;
+var rafId = 0;
+var countdownChain = [];
+var finishOrder = 0;
+var lastRaceRacers = [];
+
+function startRace(ids) {
+  lastRaceRacers = ids.slice();
+  racers = [];
+  for (var i = 0; i < ids.length; i++) {
+    var a = getAnimal(ids[i]);
+    if (!a) continue;
+    racers.push({
+      animal: a,
+      ability: 0.90 + Math.random() * 0.20,
+      progress: 0,
+      finished: false,
+      finishRank: 0,
+      finishTime: 0
+    });
+  }
+  var targetMs = 13000 + Math.random() * 4000;
+  baseSpeed = 100 / (targetMs / 16.67);
+  finishOrder = 0;
+  legFrame = 0;
+  lastLegSwap = 0;
+  resizeCanvas();
+  showScreen(screenRace);
+  modalResult.classList.remove('show');
+  runCountdown();
+}
+
+function runCountdown() {
+  var steps = ['3', '2', '1', '🏁 GO!'];
+  var delay = 0;
+  for (var i = 0; i < steps.length; i++) {
+    (function(stepText, d) {
+      setTimeout(function() {
+        countdownNum.textContent = stepText;
+        countdownOverlay.hidden = false;
+        countdownNum.style.animation = 'none';
+        countdownNum.offsetHeight;
+        countdownNum.style.animation = '';
+      }, d);
+    })(steps[i], delay);
+    delay += COUNTDOWN_MS;
+  }
+  setTimeout(function() {
+    countdownOverlay.hidden = true;
+    beginRunning();
+  }, delay);
+}
+
+function beginRunning() {
+  raceState = 'running';
+  raceT0 = performance.now();
+  lastLegSwap = raceT0;
+  rafId = requestAnimationFrame(raceLoop);
+}
+
+function raceLoop(ts) {
+  if (raceState !== 'running') return;
+  var dt = ts - lastLegSwap;
+  if (dt >= LEG_SWAP_MS) {
+    legFrame = legFrame === 0 ? 1 : 0;
+    lastLegSwap = ts;
+  }
+  raceElapsed = ts - raceT0;
+  updateRacers(ts);
+  renderRace();
+  hudTime.textContent = formatTime(raceElapsed);
+  if (raceState === 'running') {
+    rafId = requestAnimationFrame(raceLoop);
+  }
+}
+
+function updateRacers(ts) {
+  var active = 0;
+  for (var i = 0; i < racers.length; i++) {
+    if (!racers[i].finished) active++;
+  }
+  if (active > 0) {
+    var maxP = -1;
+    var minP = 101;
+    for (var j = 0; j < racers.length; j++) {
+      var r = racers[j];
+      if (r.finished) continue;
+      if (r.progress > maxP) maxP = r.progress;
+      if (r.progress < minP) minP = r.progress;
+    }
+    for (var k = 0; k < racers.length; k++) {
+      var rc = racers[k];
+      if (rc.finished) continue;
+      var burst = 0.72 + Math.random() * 0.56;
+      var speed = baseSpeed * rc.ability * burst;
+      if (rc.progress === maxP && maxP > 5) speed *= 0.88;
+      if (rc.progress === minP && racers.length > 2) speed *= 1.12;
+      rc.progress += speed;
+      if (rc.progress >= 100) {
+        rc.progress = 100;
+        rc.finished = true;
+        finishOrder++;
+        rc.finishRank = finishOrder;
+        rc.finishTime = raceElapsed;
+      }
+    }
+  }
+  var anyActive = false;
+  for (var m = 0; m < racers.length; m++) {
+    if (!racers[m].finished) { anyActive = true; break; }
+  }
+  var timedOut = raceElapsed > MAX_RACE_MS;
+  if (timedOut && anyActive) {
+    for (var n = 0; n < racers.length; n++) {
+      if (!racers[n].finished) {
+        racers[n].finished = true;
+        finishOrder++;
+        racers[n].finishRank = finishOrder;
+        racers[n].finishTime = raceElapsed;
+      }
+    }
+    anyActive = false;
+  }
+  if (!anyActive) {
+    raceState = 'done';
+    setTimeout(showResult, 700);
+  }
+}
+
+/* ═══════════════════════════════════════
+   RACE CANVAS RENDERING
+   ═══════════════════════════════════════ */
+function resizeCanvas() {
+  var wrapW = canvasWrap.clientWidth;
+  var wrapH = canvasWrap.clientHeight;
+  var dpr = window.devicePixelRatio || 1;
+  gameCanvas.width = Math.max(1, Math.round(wrapW * dpr));
+  gameCanvas.height = Math.max(1, Math.round(wrapH * dpr));
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function renderRace() {
+  var W = canvasWrap.clientWidth;
+  var H = canvasWrap.clientHeight;
+  ctx.clearRect(0, 0, W, H);
+  var n = racers.length;
+  var laneH = H / n;
+  var padL = 6;
+  var finishZoneW = 30;
+  var trackL = padL;
+  var trackR = W - finishZoneW;
+  var trackW = trackR - trackL;
+
+  for (var i = 0; i < n; i++) {
+    var y0 = i * laneH;
+    ctx.fillStyle = i % 2 === 0 ? '#FEF3C7' : '#FDE68A';
+    ctx.fillRect(0, y0, W, laneH);
+    ctx.strokeStyle = '#B45309';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, y0 + laneH);
+    ctx.lineTo(W, y0 + laneH);
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle = '#1F2937';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(trackL, 0);
+  ctx.lineTo(trackL, H);
+  ctx.stroke();
+
+  var checkerSize = finishZoneW / 2;
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(trackR, 0, finishZoneW, H);
+  ctx.fillStyle = '#111827';
+  for (var r = 0; r < (H + checkerSize - 1) / checkerSize; r++) {
+    for (var c = 0; c < 2; c++) {
+      if ((r + c) % 2 === 0) {
+        ctx.fillRect(trackR + c * checkerSize, r * checkerSize, checkerSize, checkerSize);
+      }
+    }
+  }
+  ctx.strokeStyle = '#1F2937';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(trackR, 0, finishZoneW, H);
+
+  var fontBase = 12;
+  if (laneH > 100) fontBase = 18;
+  else if (laneH > 60) fontBase = 15;
+
+  for (var i2 = 0; i2 < n; i2++) {
+    var rc = racers[i2];
+    var laneY = i2 * laneH + laneH / 2;
+    var sx = trackL + (rc.progress / 100) * trackW;
+    var s = Math.max(0.7, Math.min(2.0, laneH / 52));
+    ctx.save();
+    ctx.translate(sx, laneY + laneH * 0.35);
+    ctx.scale(s, s);
+    rc.animal.paint(ctx, legFrame);
+    ctx.restore();
+    ctx.fillStyle = 'rgba(255,255,255,0.92)';
+    rr(ctx, trackL, i2 * laneH + 2, 0, 0, 4);
+    ctx.fill();
+    ctx.font = 'bold ' + fontBase + 'px ' + 'sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    var tw = ctx.measureText(rc.animal.name).width;
+    ctx.fillStyle = 'rgba(31,41,55,0.85)';
+    rr(ctx, trackL, i2 * laneH + 4, tw + 14, Math.min(laneH - 8, 26), 13);
+    ctx.fill();
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillText(rc.animal.name, trackL + 7, i2 * laneH + 4 + Math.min(laneH - 8, 26) / 2);
+  }
+
+  var flagY = H * 0.10;
+  ctx.strokeStyle = '#111827';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(trackR, flagY + 26);
+  ctx.lineTo(trackR, flagY - 10);
+  ctx.stroke();
+  ctx.fillStyle = '#111827';
+  for (var f = 0; f < 2; f++) {
+    for (var g = 0; g < 2; g++) {
+      if ((f + g) % 2 === 0) {
+        ctx.fillRect(trackR + f * 7, flagY - 10 + g * 7, 7, 7);
+      } else {
+        ctx.fillRect(trackR + f * 7 + 7, flagY - 10 + g * 7 + 0, 0, 0);
+      }
+    }
+  }
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(trackR + 7, flagY - 10, 7, 7);
+  ctx.fillRect(trackR, flagY - 3, 7, 7);
+}
+
+/* ═══════════════════════════════════════
+   RESULTS
+   ═══════════════════════════════════════ */
+function fmtT(ms) {
+  return (ms / 1000).toFixed(1) + '초';
+}
+var MEDALS = ['🥇', '🥈', '🥉'];
+
+function showResult() {
+  var sorted = racers.slice().sort(function(a, b) {
+    if (a.finishRank === 0) return 1;
+    if (b.finishRank === 0) return -1;
+    return a.finishRank - b.finishRank;
+  });
+  var winner = null;
+  for (var i = 0; i < sorted.length; i++) {
+    if (sorted[i].finishRank === 1) winner = sorted[i];
+  }
+  if (winner) {
+    winnerBanner.textContent = '🎉 ' + winner.animal.name + ' 우승!';
+  } else {
+    winnerBanner.textContent = '🎉 경주 완료!';
+  }
+  resultTable.innerHTML = '';
+  for (var j = 0; j < sorted.length; j++) {
+    (function(idx) {
+      var r2 = sorted[idx];
+      var row = document.createElement('div');
+      var cls = 'result-row';
+      if (idx === 0) cls += ' gold';
+      else if (idx === 1) cls += ' silver';
+      else if (idx === 2) cls += ' bronze';
+      row.className = cls;
+      var medal = document.createElement('span');
+      medal.className = 'rank-medal';
+      medal.textContent = idx < 3 ? MEDALS[idx] : (idx + 1) + '위';
+      var cv = document.createElement('canvas');
+      cv.className = 'row-canvas';
+      cv.width = 44;
+      cv.height = 34;
+      var nm = document.createElement('span');
+      nm.className = 'row-name';
+      nm.textContent = r2.animal.name;
+      var tm = document.createElement('span');
+      tm.className = 'row-time';
+      tm.textContent = r2.finishTime > 0 ? fmtT(r2.finishTime) : '';
+      row.appendChild(medal);
+      row.appendChild(cv);
+      row.appendChild(nm);
+      row.appendChild(tm);
+      resultTable.appendChild(row);
+      drawSprite(cv, r2.animal, 0);
+    })(j);
+  }
+  modalResult.classList.add('show');
+}
+
+/* ═══════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════ */
+function getAnimal(id) {
+  for (var i = 0; i < ANIMALS.length; i++) {
+    if (ANIMALS[i].id === id) return ANIMALS[i];
+  }
+  return null;
+}
+function formatTime(ms) {
+  var sec = Math.floor(ms / 1000);
+  var cs = Math.floor((ms % 1000) / 100);
+  if (sec < 10) sec = '0' + sec;
+  return sec + '.' + cs;
+}
+function showScreen(el) {
+  screenSelect.classList.remove('show');
+  screenRace.classList.remove('show');
+  el.classList.add('show');
+}
+
+/* ═══════════════════════════════════════
+   BIND EVENTS
+   ═══════════════════════════════════════ */
+btnStart.addEventListener('click', function() {
+  var ids = [];
+  for (var id in selected) {
+    if (selected[id]) ids.push(id);
+  }
+  if (ids.length >= 2) {
+    stopMiniAnimation();
+    startRace(ids);
+  }
+});
+
+btnRetry.addEventListener('click', function() {
+  modalResult.classList.remove('show');
+  startRace(lastRaceRacers);
+});
+
+btnNewSel.addEventListener('click', function() {
+  modalResult.classList.remove('show');
+  showScreen(screenSelect);
+  startMiniAnimation();
+});
+
+var portalBtns = document.querySelectorAll('.btn-portal');
+for (var bi = 0; bi < portalBtns.length; bi++) {
+  portalBtns[bi].addEventListener('click', function() {
+    window.location.href = PORTAL_URL;
+  });
+}
+
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden' && raceState === 'running') {
+    raceState = 'paused';
+  } else if (document.visibilityState === 'visible' && raceState === 'paused') {
+    raceState = 'running';
+    raceT0 = performance.now() - raceElapsed;
+    lastLegSwap = performance.now();
+    rafId = requestAnimationFrame(raceLoop);
+  }
+});
+
+window.addEventListener('resize', function() {
+  if (raceState === 'running' || raceState === 'done') {
+    resizeCanvas();
+  }
+});
+
+function stopMiniAnimation() {
+  if (miniTimer) {
+    clearInterval(miniTimer);
+    miniTimer = null;
+  }
+}
+
+/* ═══════════════════════════════════════
+   LAUNCH
+   ═══════════════════════════════════════ */
+function init() {
+  buildSelection();
+  startMiniAnimation();
+  showScreen(screenSelect);
+  resizeCanvas();
+  renderIdle();
+}
+
+function renderIdle() {
+  var W = canvasWrap.clientWidth;
+  var H = canvasWrap.clientHeight;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#FEF3C7';
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#B45309';
+  ctx.font = 'bold 28px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('동물을 골라주세요!', W / 2, H / 2);
+}
+
+init();
+})();
+</script>
+</body>
+</html>
