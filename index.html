@@ -258,6 +258,11 @@ body{
   overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
 }
 .modal-overlay.show{display:flex}
+#modalResult{justify-content:flex-start;align-items:flex-end;padding:var(--space-3);background:rgba(15,23,42,0.15);pointer-events:none}
+#modalResult .modal{max-width:290px;margin:0;padding:var(--space-4);pointer-events:auto}
+#modalResult h2{font-size:clamp(16px,4.5vw,22px);margin-bottom:var(--space-2)}
+#modalResult .winner-banner{font-size:clamp(14px,4vw,18px);padding:var(--space-1) var(--space-2);margin-bottom:var(--space-2)}
+#modalResult .modal-actions{margin-top:var(--space-2)}
 .modal{
   position:relative;background:var(--surface);border-radius:var(--radius-lg);
   padding:var(--space-6) var(--space-5);width:100%;max-width:420px;
@@ -272,21 +277,6 @@ body{
   background:var(--accent-animalrun-bg);border:2px solid var(--accent-animalrun);
   border-radius:var(--radius);padding:var(--space-2) var(--space-3);
 }
-.result-table{display:flex;flex-direction:column;gap:var(--space-1);margin:var(--space-3) 0}
-.result-row{
-  display:flex;align-items:center;gap:var(--space-3);
-  padding:var(--space-2) var(--space-3);
-  border-radius:var(--radius-sm);
-  font-size:var(--text-lg);font-weight:var(--weight-bold);
-}
-.result-row:nth-child(odd){background:var(--surface-raised)}
-.result-row.gold{background:#FEF3C7;border:2px solid #F59E0B}
-.result-row.silver{background:#F1F5F9;border:2px solid #94A3B8}
-.result-row.bronze{background:#FFEDD5;border:2px solid #D97706}
-.rank-medal{width:44px;flex-shrink:0;text-align:center;font-size:var(--text-xl);font-weight:var(--weight-extrabold);color:var(--text-secondary)}
-.row-canvas{width:44px;height:34px;flex-shrink:0;display:block}
-.row-name{flex:1;text-align:left;font-size:var(--text-lg);line-height:1.2}
-.row-time{font-size:var(--text-sm);color:var(--text-muted);font-weight:var(--weight-semibold);white-space:nowrap;font-variant-numeric:tabular-nums}
 .modal-actions{display:flex;flex-direction:column;gap:var(--space-3);margin-top:var(--space-4)}
 .btn{
   width:100%;min-height:var(--touch-min);padding:var(--space-4) var(--space-5);border-radius:var(--btn-radius);
@@ -337,7 +327,6 @@ button:focus-visible{outline:3px solid var(--accent-animalrun);outline-offset:2p
     <div class="modal">
       <h2>🏁 경주 결과</h2>
       <div id="winnerBanner" class="winner-banner"></div>
-      <div id="resultTable" class="result-table"></div>
       <div class="modal-actions">
         <button id="btnRetry" class="btn btn-primary" type="button">🔄 다시하기</button>
         <button id="btnNewSel" class="btn btn-secondary" type="button">🐾 새로 고르기</button>
@@ -386,7 +375,6 @@ var countdownOverlay = document.getElementById('countdownOverlay');
 var countdownNum = document.getElementById('countdownNum');
 var modalResult = document.getElementById('modalResult');
 var winnerBanner = document.getElementById('winnerBanner');
-var resultTable = document.getElementById('resultTable');
 var btnRetry = document.getElementById('btnRetry');
 var btnNewSel = document.getElementById('btnNewSel');
 
@@ -877,8 +865,19 @@ var lastRaceRacers = [];
 /* 경주 중 랜덤 가속/감속 페이즈 — 느려졌다 빨라졌다 반복 */
 var camX = 0;              // 레이스 카메라 기준점 (팩 중앙 추적)
 var camZ = 1;              // 레이스 카메라 줌 (전 동물 뷰에 맞춤)
+var maxSpreadSeen = 0;     // 지금까지 본 팩 최대 퍼짐 — 결승 직전 줌인(확대) 방지용
 var TRACK_MULT = 6;        // 트랙 길이 = 화면 폭의 6배
 var DIST_MARK = 128;       // 배경 거리 마커 간격
+
+var THEMES = [
+  { bg:['#87CEEB','#B0E0E6','#FDE68A'], lane:['rgba(254,249,224,0.92)','rgba(253,230,138,0.92)'], border:'#D97706', marker:'rgba(180,83,9,0.10)' },
+  { bg:['#87CEEB','#98FB98','#22C55E'], lane:['rgba(236,252,203,0.92)','rgba(217,249,157,0.92)'], border:'#16A34A', marker:'rgba(22,163,74,0.10)' },
+  { bg:['#94A3B8','#CBD5E1','#F1F5F9'], lane:['rgba(224,242,254,0.92)','rgba(186,230,253,0.92)'], border:'#0284C7', marker:'rgba(2,132,199,0.10)' },
+  { bg:['#F97316','#EC4899','#7C3AED'], lane:['rgba(254,243,199,0.92)','rgba(255,237,213,0.92)'], border:'#B45309', marker:'rgba(180,83,9,0.10)' },
+  { bg:['#1E293B','#0F172A','#020617'], lane:['rgba(51,65,85,0.92)','rgba(71,85,105,0.92)'], border:'#CBD5E1', marker:'rgba(203,213,225,0.10)' },
+  { bg:['#166534','#15803D','#86EFAC'], lane:['rgba(209,250,229,0.92)','rgba(187,247,208,0.92)'], border:'#166534', marker:'rgba(22,101,52,0.10)' }
+];
+var raceTheme = null;
 
 var SPEED_PHASES = [0.55, 0.8, 1.0, 1.2, 1.45];
 
@@ -899,7 +898,7 @@ function startRace(ids) {
       finishTime: 0
     });
   }
-  var targetMs = 13000 + Math.random() * 4000;
+  var targetMs = 15000 + Math.random() * 5000;
   baseSpeed = 100 / (targetMs / 16.67);
   finishOrder = 0;
   legFrame = 0;
@@ -936,6 +935,15 @@ function beginRunning() {
   raceT0 = performance.now();
   lastLegSwap = raceT0;
   resizeCanvas();
+  // 카메라를 출발 위치로 즉시 고정 — 처음부터 준비선에 선 동물들이 보이게
+  // (그전까지는 camX=0/잔여 값이라 뷰가 휙 바뀌는 스윙이 발생했음)
+  maxSpreadSeen = 0;
+  raceTheme = THEMES[Math.floor(Math.random() * THEMES.length)];
+  camZ = 1;
+  var W0 = canvasWrap.clientWidth;
+  var trackLen0 = Math.max(W0 * TRACK_MULT, 900);
+  var packCenter0 = 60; // padL — 출발 시점 모든 동물은 출발선(trackL)에 서 있음
+  camX = Math.max(W0 / 2 - 70, Math.min(trackLen0 - W0 / 2 + 70, packCenter0));
   rafId = requestAnimationFrame(raceLoop);
 }
 
@@ -1028,7 +1036,6 @@ function renderRace() {
   var H = canvasWrap.clientHeight;
   ctx.clearRect(0, 0, W, H);
   var n = racers.length;
-  var screenLaneH = H / n;
 
   // 롱 트랙 — 결승선(체커 존)은 트랙 맨 끝에만 존재
   var trackLen = Math.max(W * TRACK_MULT, 900);
@@ -1051,15 +1058,17 @@ function renderRace() {
 
   // 카메라 기준점 = 팩의 중앙 — 모든 동물이 뷰 안에 들어오도록 줌 조절
   // 양끝에 패딩(70px)을 둬서 동물이 뷰 가장자리에서 잘리지 않게 함
+  // maxSpreadSeen을 기억해두면 팩이 모이는 결승 직전에 줌인(확대)되는 느낌이 없음
   var spread = pMax - pMin;
-  var targetZoom = Math.max(0.4, Math.min(1, (W - 140) / Math.max(spread, W * 0.5)));
+  if (spread > maxSpreadSeen) maxSpreadSeen = spread;
+  var targetZoom = Math.max(0.4, Math.min(1, (W - 140) / Math.max(spread, W * 0.5, maxSpreadSeen)));
   camZ += (targetZoom - camZ) * 0.12;
   if (Math.abs(targetZoom - camZ) < 0.005) camZ = targetZoom;
   var worldW = W / camZ;
   var worldH = H / camZ;
   var laneH = worldH / n;
   var packCenter = (pMin + pMax) / 2;
-  var camTarget = Math.max(worldW / 2, Math.min(trackLen - worldW / 2 + 70, packCenter));
+  var camTarget = Math.max(worldW / 2 - 70, Math.min(trackLen - worldW / 2 + 70, packCenter));
   camX += (camTarget - camX) * 0.12;
   if (Math.abs(camTarget - camX) < 1) camX = camTarget;
 
@@ -1067,12 +1076,22 @@ function renderRace() {
   ctx.scale(camZ, camZ);
   ctx.translate(W / (2 * camZ) - camX, 0);
 
+  // 배경 테마 — 랜덤 환경
+  if (raceTheme) {
+    var grd = ctx.createLinearGradient(0, 0, 0, worldH);
+    for (var gi = 0; gi < raceTheme.bg.length; gi++) {
+      grd.addColorStop(gi / (raceTheme.bg.length - 1 || 1), raceTheme.bg[gi]);
+    }
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, trackLen, worldH);
+  }
+
   // 레인 배경 — 트랙 전체 길이
   for (var i = 0; i < n; i++) {
     var y0 = i * laneH;
-    ctx.fillStyle = i % 2 === 0 ? '#FEF3C7' : '#FDE68A';
+    ctx.fillStyle = raceTheme ? (i % 2 === 0 ? raceTheme.lane[0] : raceTheme.lane[1]) : (i % 2 === 0 ? '#FEF3C7' : '#FDE68A');
     ctx.fillRect(0, y0, trackLen, laneH);
-    ctx.strokeStyle = '#B45309';
+    ctx.strokeStyle = raceTheme ? raceTheme.border : '#B45309';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(0, y0 + laneH);
@@ -1081,7 +1100,7 @@ function renderRace() {
   }
 
   // 배경 거리 마커 — 화면이 쭉 지나가는 느낌
-  ctx.fillStyle = 'rgba(180,83,9,0.16)';
+  ctx.fillStyle = raceTheme ? raceTheme.marker : 'rgba(180,83,9,0.16)';
   for (var m = DIST_MARK; m < finishX; m += DIST_MARK) {
     ctx.fillRect(m, 0, 2, worldH);
   }
@@ -1110,10 +1129,6 @@ function renderRace() {
   ctx.lineWidth = 2;
   ctx.strokeRect(finishX, 0, finishZoneW, worldH);
 
-  var fontBase = 12;
-  if (screenLaneH > 100) fontBase = 18;
-  else if (screenLaneH > 60) fontBase = 15;
-
   // 동물 — 발(17)이 레인 바닥(레일)에 정확히 닿도록 배치, 완주자는 결승선에서 정지
   for (var i2 = 0; i2 < n; i2++) {
     var rc = racers[i2];
@@ -1128,74 +1143,47 @@ function renderRace() {
     ctx.restore();
   }
 
-  ctx.restore();
-
-  // 이름 라벨 — 화면 좌표로 그려 텍스트가 항상 선명하게 유지
-  for (var i3 = 0; i3 < n; i3++) {
-    var rc2 = racers[i3];
-    var sx2 = trackL + (rc2.progress / 100) * trackW;
-    var sxScreen = (sx2 - camX) * camZ + W / 2;
-    ctx.font = 'bold ' + fontBase + 'px sans-serif';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-    var tw = ctx.measureText(rc2.animal.name).width;
-    var labelH = Math.min(screenLaneH - 8, 26);
-    var labelX = Math.max(4, sxScreen - tw - 16);
-    var labelY = i3 * screenLaneH + 4;
-    ctx.fillStyle = 'rgba(31,41,55,0.85)';
-    rr(ctx, labelX, labelY, tw + 14, labelH, 13);
+  // 도착 순위 배지 — 결승선에 도착한 동물 위에 실시간 표시
+  for (var ir = 0; ir < n; ir++) {
+    var rc3 = racers[ir];
+    if (rc3.finishRank <= 0) continue;
+    var lb3 = (ir + 1) * laneH;
+    var s3 = Math.max(0.7, Math.min(2.0, laneH / 52));
+    var bx3 = trackL + (rc3.progress / 100) * trackW;
+    var r3 = Math.max(10, laneH * 0.3);
+    var by3 = lb3 - 17 * s3 - r3 - 4;
+    if (rc3.finishRank === 1) ctx.fillStyle = '#FBBF24';
+    else if (rc3.finishRank === 2) ctx.fillStyle = '#D1D5DB';
+    else if (rc3.finishRank === 3) ctx.fillStyle = '#D97706';
+    else ctx.fillStyle = '#9CA3AF';
+    ctx.beginPath();
+    ctx.arc(bx3, by3, r3, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillText(rc2.animal.name, labelX + 7, labelY + labelH / 2);
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = rc3.finishRank === 2 ? '#334155' : '#FFFFFF';
+    ctx.font = 'bold ' + Math.max(9, r3 * 0.95) + 'px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(rc3.finishRank + '위', bx3, by3);
   }
+
+  ctx.restore();
 }
 
 /* ═══════════════════════════════════════
    RESULTS
    ═══════════════════════════════════════ */
-var MEDALS = ['🥇', '🥈', '🥉'];
-
 function showResult() {
-  var sorted = racers.slice().sort(function(a, b) {
-    if (a.finishRank === 0) return 1;
-    if (b.finishRank === 0) return -1;
-    return a.finishRank - b.finishRank;
-  });
   var winner = null;
-  for (var i = 0; i < sorted.length; i++) {
-    if (sorted[i].finishRank === 1) winner = sorted[i];
+  for (var i = 0; i < racers.length; i++) {
+    if (racers[i].finishRank === 1) winner = racers[i];
   }
   if (winner) {
     winnerBanner.textContent = '🎉 ' + winner.animal.name + ' 우승!';
   } else {
     winnerBanner.textContent = '🎉 경주 완료!';
-  }
-  resultTable.innerHTML = '';
-  for (var j = 0; j < sorted.length; j++) {
-    (function(idx) {
-      var r2 = sorted[idx];
-      var row = document.createElement('div');
-      var cls = 'result-row';
-      if (idx === 0) cls += ' gold';
-      else if (idx === 1) cls += ' silver';
-      else if (idx === 2) cls += ' bronze';
-      row.className = cls;
-      var medal = document.createElement('span');
-      medal.className = 'rank-medal';
-      medal.textContent = idx < 3 ? MEDALS[idx] : (idx + 1) + '위';
-      var cv = document.createElement('canvas');
-      cv.className = 'row-canvas';
-      cv.width = 44;
-      cv.height = 34;
-      var nm = document.createElement('span');
-      nm.className = 'row-name';
-      nm.textContent = r2.animal.name;
-      row.appendChild(medal);
-      row.appendChild(cv);
-      row.appendChild(nm);
-      resultTable.appendChild(row);
-      drawSprite(cv, r2.animal, 0);
-    })(j);
   }
   modalResult.classList.add('show');
 }
