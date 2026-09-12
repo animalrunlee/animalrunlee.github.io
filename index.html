@@ -1566,24 +1566,18 @@ function renderRace() {
   // 배경 테마 — 랜덤 환경 씬 (하늘/해/달/구름/산/바다/지면)
   drawScene(raceTheme, camX - worldW / 2, worldW, worldH, skyH);
 
-  // 레인 배경 — 트랙 전체 길이
-  for (var i = 0; i < n; i++) {
-    var y0 = skyH + i * laneH;
-    ctx.fillStyle = raceTheme ? (i % 2 === 0 ? raceTheme.lane[0] : raceTheme.lane[1]) : (i % 2 === 0 ? '#FEF3C7' : '#FDE68A');
-    ctx.fillRect(0, y0, trackLen, laneH);
-    ctx.strokeStyle = raceTheme ? raceTheme.border : '#B45309';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(0, y0 + laneH);
-    ctx.lineTo(trackLen, y0 + laneH);
-    ctx.stroke();
-  }
+  // 레인 배경 — 트랙 전체를 하나의 부드러운 톤으로 (레인 구분선 없음)
+  ctx.fillStyle = raceTheme ? raceTheme.lane[0] : '#FEF3C7';
+  ctx.fillRect(0, skyH, trackLen, n * laneH);
 
-  // 배경 거리 마커 — 화면이 쭉 지나가는 느낌
+  // 배경 거리 마커 — 흐릿하게 잔상 느낌만
+  ctx.save();
+  ctx.globalAlpha = 0.35;
   ctx.fillStyle = raceTheme ? raceTheme.marker : 'rgba(180,83,9,0.16)';
   for (var m = DIST_MARK; m < finishX; m += DIST_MARK) {
-    ctx.fillRect(m, 0, 2, worldH);
+    ctx.fillRect(m, 0, 1, worldH);
   }
+  ctx.restore();
 
   // 출발선
   ctx.strokeStyle = '#1F2937';
