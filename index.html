@@ -233,7 +233,7 @@ body{
 .countdown-overlay{
   position:absolute;inset:0;z-index:20;
   display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,0.55);
+  background:rgba(255,255,255,0.18);
   pointer-events:none;
 }
 .countdown-num{
@@ -258,7 +258,7 @@ body{
   overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
 }
 .modal-overlay.show{display:flex}
-#modalResult{justify-content:flex-start;align-items:flex-end;padding:var(--space-3);background:rgba(15,23,42,0.15);pointer-events:none}
+#modalResult{justify-content:center;align-items:center;padding:var(--space-3);background:rgba(15,23,42,0.22);pointer-events:none}
 #modalResult .modal{max-width:290px;margin:0;padding:var(--space-4);pointer-events:auto}
 #modalResult h2{font-size:clamp(16px,4.5vw,22px);margin-bottom:var(--space-2)}
 #modalResult .winner-banner{font-size:clamp(14px,4vw,18px);padding:var(--space-1) var(--space-2);margin-bottom:var(--space-2)}
@@ -397,17 +397,46 @@ function fillRR(ctx2, x, y, w, h, r, color) {
   ctx2.fill();
 }
 function eye(ctx2, x, y, r) {
+  ctx2.fillStyle = 'rgba(255,255,255,0.18)';
+  ctx2.beginPath();
+  ctx2.arc(x, y, r * 1.4, 0, Math.PI * 2);
+  ctx2.fill();
   ctx2.fillStyle = '#FFFFFF';
   ctx2.beginPath();
   ctx2.arc(x, y, r, 0, Math.PI * 2);
   ctx2.fill();
   ctx2.fillStyle = '#111827';
   ctx2.beginPath();
-  ctx2.arc(x + r * 0.30, y - r * 0.10, r * 0.55, 0, Math.PI * 2);
+  ctx2.arc(x + r * 0.32, y - r * 0.08, r * 0.58, 0, Math.PI * 2);
   ctx2.fill();
   ctx2.fillStyle = '#FFFFFF';
   ctx2.beginPath();
-  ctx2.arc(x + r * 0.55, y - r * 0.35, r * 0.20, 0, Math.PI * 2);
+  ctx2.arc(x + r * 0.55, y - r * 0.35, r * 0.24, 0, Math.PI * 2);
+  ctx2.fill();
+}
+function groundShadow(ctx2) {
+  ctx2.fillStyle = 'rgba(17,24,39,0.18)';
+  ctx2.beginPath();
+  ctx2.ellipse(0, 0.5, 15, 3.4, 0, 0, Math.PI * 2);
+  ctx2.fill();
+}
+function bodyShade(ctx2) {
+  var grd = ctx2.createRadialGradient(-4, -23, 2, 4, -9, 26);
+  grd.addColorStop(0, 'rgba(255,255,255,0.30)');
+  grd.addColorStop(0.55, 'rgba(255,255,255,0.03)');
+  grd.addColorStop(1, 'rgba(0,0,0,0.20)');
+  ctx2.fillStyle = grd;
+  ctx2.beginPath();
+  ctx2.ellipse(0, -17, 16, 16, 0, 0, Math.PI * 2);
+  ctx2.fill();
+}
+function nightGlow(ctx2) {
+  var grd = ctx2.createRadialGradient(0, -18, 1, 0, -18, 25);
+  grd.addColorStop(0, 'rgba(254,243,199,0.32)');
+  grd.addColorStop(1, 'rgba(254,243,199,0)');
+  ctx2.fillStyle = grd;
+  ctx2.beginPath();
+  ctx2.arc(0, -18, 25, 0, Math.PI * 2);
   ctx2.fill();
 }
 function legPair(ctx2, w, h, color, spread, frame) {
@@ -756,7 +785,9 @@ function drawSprite(canvas2, animal, legFrame) {
   ctx2.save();
   ctx2.translate(w / 2, h - 1 - 17 * s);
   ctx2.scale(s, s);
+  groundShadow(ctx2);
   animal.paint(ctx2, legFrame);
+  bodyShade(ctx2);
   ctx2.restore();
 }
 
@@ -841,11 +872,11 @@ var miniTimer = null;
 function startMiniAnimation() {
   if (miniTimer) return;
   miniTimer = setInterval(function() {
-    miniLegFrame = miniLegFrame === 0 ? 1 : 0;
+    miniLegFrame = (miniLegFrame + 1) % 4;
     for (var i = 0; i < miniCanvases.length; i++) {
       drawSprite(miniCanvases[i].cv, miniCanvases[i].animal, miniLegFrame);
     }
-  }, 180);
+  }, 130);
 }
 
 /* ═══════════════════════════════════════
@@ -870,12 +901,12 @@ var TRACK_MULT = 6;        // 트랙 길이 = 화면 폭의 6배
 var DIST_MARK = 128;       // 배경 거리 마커 간격
 
 var THEMES = [
-  { bg:['#87CEEB','#B0E0E6','#FDE68A'], lane:['rgba(254,249,224,0.92)','rgba(253,230,138,0.92)'], border:'#D97706', marker:'rgba(180,83,9,0.10)' },
-  { bg:['#87CEEB','#98FB98','#22C55E'], lane:['rgba(236,252,203,0.92)','rgba(217,249,157,0.92)'], border:'#16A34A', marker:'rgba(22,163,74,0.10)' },
-  { bg:['#94A3B8','#CBD5E1','#F1F5F9'], lane:['rgba(224,242,254,0.92)','rgba(186,230,253,0.92)'], border:'#0284C7', marker:'rgba(2,132,199,0.10)' },
-  { bg:['#F97316','#EC4899','#7C3AED'], lane:['rgba(254,243,199,0.92)','rgba(255,237,213,0.92)'], border:'#B45309', marker:'rgba(180,83,9,0.10)' },
-  { bg:['#1E293B','#0F172A','#020617'], lane:['rgba(51,65,85,0.92)','rgba(71,85,105,0.92)'], border:'#CBD5E1', marker:'rgba(203,213,225,0.10)' },
-  { bg:['#166534','#15803D','#86EFAC'], lane:['rgba(209,250,229,0.92)','rgba(187,247,208,0.92)'], border:'#166534', marker:'rgba(22,101,52,0.10)' }
+  { scene:'beach',  bg:['#7EC8E3','#A8DCE7','#FEF3C7'], lane:['rgba(255,249,224,0.92)','rgba(253,230,138,0.92)'], border:'#D97706', marker:'rgba(180,83,9,0.10)', ground:'#FCD34D', ground2:'#F59E0B' },
+  { scene:'field',  bg:['#87CEEB','#BFE3B4','#FDE68A'], lane:['rgba(240,253,244,0.92)','rgba(220,252,231,0.92)'], border:'#16A34A', marker:'rgba(22,163,74,0.10)', ground:'#22C55E', ground2:'#16A34A' },
+  { scene:'snow',   bg:['#A8C4DE','#D7E3F0','#F8FAFC'], lane:['rgba(224,242,254,0.92)','rgba(191,219,254,0.92)'], border:'#0284C7', marker:'rgba(2,132,199,0.10)', ground:'#E2E8F0', ground2:'#CBD5E1' },
+  { scene:'sunset', bg:['#FDBA74','#FB7185','#7E22CE'], lane:['rgba(255,247,205,0.92)','rgba(254,243,199,0.92)'], border:'#B45309', marker:'rgba(180,83,9,0.10)', ground:'#581C87', ground2:'#3B0764' },
+  { scene:'night',  bg:['#0F172A','#1E293B','#334155'], lane:['rgba(51,65,85,0.92)','rgba(71,85,105,0.92)'], border:'#94A3B8', marker:'rgba(148,163,184,0.12)', ground:'#020617', ground2:'#0F172A' },
+  { scene:'forest', bg:['#86EFAC','#4ADE80','#166534'], lane:['rgba(240,253,244,0.92)','rgba(220,252,231,0.92)'], border:'#15803D', marker:'rgba(21,128,61,0.10)', ground:'#14532D', ground2:'#166534' }
 ];
 var raceTheme = null;
 
@@ -906,6 +937,16 @@ function startRace(ids) {
   showScreen(screenRace);
   resizeCanvas();
   modalResult.classList.remove('show');
+  // 카운트다운 중에도 출발선에서 대기하는 동물들이 보이도록 카메라/테마를 먼저 고정하고 렌더 시작
+  raceState = 'countdown';
+  maxSpreadSeen = 0;
+  raceTheme = THEMES[Math.floor(Math.random() * THEMES.length)];
+  camZ = 1;
+  var W0 = canvasWrap.clientWidth;
+  var trackLen0 = Math.max(W0 * TRACK_MULT, 900);
+  var packCenter0 = 60;
+  camX = Math.max(W0 / 2 - 70, Math.min(trackLen0 - W0 / 2 + 70, packCenter0));
+  rafId = requestAnimationFrame(raceLoop);
   runCountdown();
 }
 
@@ -935,23 +976,18 @@ function beginRunning() {
   raceT0 = performance.now();
   lastLegSwap = raceT0;
   resizeCanvas();
-  // 카메라를 출발 위치로 즉시 고정 — 처음부터 준비선에 선 동물들이 보이게
-  // (그전까지는 camX=0/잔여 값이라 뷰가 휙 바뀌는 스윙이 발생했음)
-  maxSpreadSeen = 0;
-  raceTheme = THEMES[Math.floor(Math.random() * THEMES.length)];
-  camZ = 1;
-  var W0 = canvasWrap.clientWidth;
-  var trackLen0 = Math.max(W0 * TRACK_MULT, 900);
-  var packCenter0 = 60; // padL — 출발 시점 모든 동물은 출발선(trackL)에 서 있음
-  camX = Math.max(W0 / 2 - 70, Math.min(trackLen0 - W0 / 2 + 70, packCenter0));
-  rafId = requestAnimationFrame(raceLoop);
 }
 
 function raceLoop(ts) {
+  if (raceState === 'countdown') {
+    renderRace();
+    rafId = requestAnimationFrame(raceLoop);
+    return;
+  }
   if (raceState !== 'running') return;
   var dt = ts - lastLegSwap;
   if (dt >= LEG_SWAP_MS) {
-    legFrame = legFrame === 0 ? 1 : 0;
+    legFrame = (legFrame + 1) % 4;
     lastLegSwap = ts;
   }
   raceElapsed = ts - raceT0;
@@ -1031,6 +1067,126 @@ function resizeCanvas() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
+function drawScene(t, vx, worldW, worldH, skyH) {
+  if (!t) return;
+  var gy = worldH - worldH * 0.10;
+  var grd = ctx.createLinearGradient(0, 0, 0, worldH);
+  for (var gi = 0; gi < t.bg.length; gi++) {
+    grd.addColorStop(gi / (t.bg.length - 1 || 1), t.bg[gi]);
+  }
+  ctx.fillStyle = grd;
+  ctx.fillRect(vx, 0, worldW, worldH);
+  var i, sx, sy, cw, cy, cx;
+  if (t.scene === 'night') {
+    ctx.fillStyle = '#FFFFFF';
+    for (i = 0; i < 30; i++) {
+      sx = vx + ((i * 97 + 13) % 100) / 100 * worldW;
+      sy = ((i * 31 + 7) % 100) / 100 * skyH;
+      ctx.globalAlpha = 0.25 + ((i * 11) % 6) / 10;
+      ctx.fillRect(sx, sy, 2, 2);
+    }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#FDE68A';
+    ctx.beginPath();
+    ctx.arc(vx + worldW * 0.82, skyH * 0.38, worldH * 0.045, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#0F172A';
+    ctx.beginPath();
+    ctx.arc(vx + worldW * 0.80, skyH * 0.35, worldH * 0.04, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#0B1220';
+    for (i = 0; i < 3; i++) {
+      ctx.beginPath();
+      ctx.arc(vx + worldW * (0.15 + i * 0.34), skyH, worldH * 0.20, Math.PI, 0);
+      ctx.fill();
+    }
+  } else {
+    ctx.fillStyle = t.scene === 'sunset' ? '#FF6B35' : '#FDE047';
+    ctx.beginPath();
+    ctx.arc(vx + worldW * (t.scene === 'sunset' ? 0.50 : 0.82), skyH * (t.scene === 'sunset' ? 0.60 : 0.38), worldH * (t.scene === 'sunset' ? 0.075 : 0.045), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = t.scene === 'sunset' ? 'rgba(88,28,135,0.55)' : 'rgba(255,255,255,0.85)';
+    for (i = 0; i < 3; i++) {
+      cx = vx + ((i * 137 + 29) % 100) / 100 * worldW;
+      cy = skyH * (0.18 + ((i * 53) % 30) / 100);
+      cw = worldH * 0.042;
+      ctx.beginPath();
+      ctx.arc(cx, cy, cw, 0, Math.PI * 2);
+      ctx.arc(cx + cw * 1.2, cy - cw * 0.35, cw * 0.8, 0, Math.PI * 2);
+      ctx.arc(cx + cw * 2.1, cy, cw * 0.85, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (t.scene === 'field') {
+      ctx.fillStyle = '#4ADE80';
+      for (i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.arc(vx + worldW * (0.18 + i * 0.32), skyH, worldH * 0.18, Math.PI, 0);
+        ctx.fill();
+      }
+      ctx.fillStyle = '#F43F5E';
+      for (i = 0; i < 10; i++) {
+        ctx.fillRect(vx + ((i * 61 + 3) % 100) / 100 * worldW, skyH + ((i * 29 + 11) % 50) / 100 * worldH * 0.02, 3, 3);
+      }
+    } else if (t.scene === 'forest') {
+      ctx.fillStyle = '#14532D';
+      for (i = 0; i < 6; i++) {
+        var tx = vx + worldW * (0.04 + i * 0.18);
+        var th = worldH * 0.10;
+        ctx.beginPath();
+        ctx.moveTo(tx, skyH);
+        ctx.lineTo(tx - th * 0.35, skyH);
+        ctx.lineTo(tx, skyH - th);
+        ctx.lineTo(tx + th * 0.35, skyH);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.fillStyle = '#166534';
+      for (i = 0; i < 4; i++) {
+        ctx.beginPath();
+        ctx.arc(vx + worldW * (0.08 + i * 0.28), skyH, worldH * 0.05, Math.PI, 0);
+        ctx.fill();
+      }
+    } else if (t.scene === 'beach') {
+      ctx.fillStyle = '#38BDF8';
+      ctx.fillRect(vx, skyH - worldH * 0.05, worldW, worldH * 0.06);
+      ctx.fillStyle = 'rgba(255,255,255,0.75)';
+      for (i = 0; i < 9; i++) {
+        ctx.beginPath();
+        ctx.arc(vx + worldW * (0.03 + i * 0.11), skyH - worldH * 0.035, worldH * 0.012, 0, Math.PI);
+        ctx.fill();
+      }
+    } else if (t.scene === 'snow') {
+      ctx.fillStyle = '#F8FAFC';
+      for (i = 0; i < 4; i++) {
+        var px2 = vx + worldW * (0.1 + i * 0.27);
+        var bw2 = worldH * 0.20;
+        var ph2 = worldH * (0.15 + (i % 2) * 0.05);
+        ctx.beginPath();
+        ctx.moveTo(px2 - bw2, skyH);
+        ctx.lineTo(px2, skyH - ph2);
+        ctx.lineTo(px2 + bw2, skyH);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      for (i = 0; i < 26; i++) {
+        ctx.fillRect(vx + ((i * 47 + 11) % 100) / 100 * worldW, ((i * 23 + 5) % 100) / 100 * skyH, 2, 2);
+      }
+    } else if (t.scene === 'sunset') {
+      ctx.fillStyle = '#581C87';
+      for (i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.arc(vx + worldW * (0.12 + i * 0.36), skyH, worldH * 0.22, Math.PI, 0);
+        ctx.fill();
+      }
+    }
+  }
+  ctx.fillStyle = t.ground;
+  ctx.fillRect(vx, gy, worldW, worldH - gy);
+  ctx.fillStyle = t.ground2;
+  ctx.fillRect(vx, gy, worldW, (worldH - gy) * 0.18);
+}
+
 function renderRace() {
   var W = canvasWrap.clientWidth;
   var H = canvasWrap.clientHeight;
@@ -1066,7 +1222,9 @@ function renderRace() {
   if (Math.abs(targetZoom - camZ) < 0.005) camZ = targetZoom;
   var worldW = W / camZ;
   var worldH = H / camZ;
-  var laneH = worldH / n;
+  var skyH = worldH * 0.15;
+  var groundH = worldH * 0.10;
+  var laneH = (worldH - skyH - groundH) / n;
   var packCenter = (pMin + pMax) / 2;
   var camTarget = Math.max(worldW / 2 - 70, Math.min(trackLen - worldW / 2 + 70, packCenter));
   camX += (camTarget - camX) * 0.12;
@@ -1076,19 +1234,12 @@ function renderRace() {
   ctx.scale(camZ, camZ);
   ctx.translate(W / (2 * camZ) - camX, 0);
 
-  // 배경 테마 — 랜덤 환경
-  if (raceTheme) {
-    var grd = ctx.createLinearGradient(0, 0, 0, worldH);
-    for (var gi = 0; gi < raceTheme.bg.length; gi++) {
-      grd.addColorStop(gi / (raceTheme.bg.length - 1 || 1), raceTheme.bg[gi]);
-    }
-    ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, trackLen, worldH);
-  }
+  // 배경 테마 — 랜덤 환경 씬 (하늘/해/달/구름/산/바다/지면)
+  drawScene(raceTheme, camX - worldW / 2, worldW, worldH, skyH);
 
   // 레인 배경 — 트랙 전체 길이
   for (var i = 0; i < n; i++) {
-    var y0 = i * laneH;
+    var y0 = skyH + i * laneH;
     ctx.fillStyle = raceTheme ? (i % 2 === 0 ? raceTheme.lane[0] : raceTheme.lane[1]) : (i % 2 === 0 ? '#FEF3C7' : '#FDE68A');
     ctx.fillRect(0, y0, trackLen, laneH);
     ctx.strokeStyle = raceTheme ? raceTheme.border : '#B45309';
@@ -1132,14 +1283,18 @@ function renderRace() {
   // 동물 — 발(17)이 레인 바닥(레일)에 정확히 닿도록 배치, 완주자는 결승선에서 정지
   for (var i2 = 0; i2 < n; i2++) {
     var rc = racers[i2];
-    var laneBottom = (i2 + 1) * laneH;
+    var laneBottom = skyH + (i2 + 1) * laneH;
     var sx = trackL + (rc.progress / 100) * trackW;
     var s = Math.max(0.7, Math.min(2.0, laneH / 52));
     var lf = rc.progress >= 100 ? 0 : legFrame;
+    var bob = lf === 1 ? -1.2 : (lf === 3 ? 1.1 : 0);
     ctx.save();
-    ctx.translate(sx, laneBottom - 17 * s);
+    ctx.translate(sx, laneBottom - 17 * s + bob * s);
     ctx.scale(s, s);
+    groundShadow(ctx);
+    if (raceTheme && raceTheme.scene === 'night') nightGlow(ctx);
     rc.animal.paint(ctx, lf);
+    bodyShade(ctx);
     ctx.restore();
   }
 
@@ -1147,7 +1302,7 @@ function renderRace() {
   for (var ir = 0; ir < n; ir++) {
     var rc3 = racers[ir];
     if (rc3.finishRank <= 0) continue;
-    var lb3 = (ir + 1) * laneH;
+    var lb3 = skyH + (ir + 1) * laneH;
     var s3 = Math.max(0.7, Math.min(2.0, laneH / 52));
     var bx3 = trackL + (rc3.progress / 100) * trackW;
     var r3 = Math.max(10, laneH * 0.3);
