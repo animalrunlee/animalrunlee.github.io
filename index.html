@@ -362,7 +362,7 @@ var ANIMALS = [
 ];
 
 var SPRITE_FILES = { yoshi:'sprites/dinosaur.png', sheep:'sprites/sheep.png', donkey:'sprites/donkey.png', turtle:'sprites/turtle.png', penguin:'sprites/penguin.png', tiger:'sprites/tiger.png', wolf:'sprites/wolf.png', bear:'sprites/bear.png', lion:'sprites/lion.png', gorilla:'sprites/gorilla.png' };
-var SPRITE_FLIP = { yoshi:true, sheep:true, lion:true };
+var SPRITE_FLIP = {};
 
 function spriteBox(img) {
   var c = document.createElement('canvas');
@@ -391,7 +391,7 @@ function makeImagePaint(box, img) {
   var nw = box.w * nh / box.h;
   if (nw > 52) { nw = 52; nh = box.h * 52 / box.w; }
   var flip = SPRITE_FLIP[box.id] || false;
-  return function(ctx2, legFrame) {
+  var p = function(ctx2, legFrame) {
     if (flip) {
       ctx2.save();
       ctx2.translate(nw / 2, 17 - nh);
@@ -402,6 +402,8 @@ function makeImagePaint(box, img) {
       ctx2.drawImage(img, box.x, box.y, box.w, box.h, -nw / 2, 17 - nh, nw, nh);
     }
   };
+  p.isImage = true;
+  return p;
 }
 
 var spritesReady = false;
@@ -1112,9 +1114,13 @@ function drawSprite(canvas2, animal, legFrame) {
   ctx2.save();
   ctx2.translate(w / 2, h - 1 - 17 * s);
   ctx2.scale(s, s);
-  groundShadow(ctx2);
-  animal.paint(ctx2, legFrame);
-  bodyShade(ctx2);
+  if (!animal.paint.isImage) {
+    groundShadow(ctx2);
+    animal.paint(ctx2, legFrame);
+    bodyShade(ctx2);
+  } else {
+    animal.paint(ctx2, legFrame);
+  }
   ctx2.restore();
 }
 
@@ -1138,11 +1144,7 @@ function buildSelection() {
       cv.className = 'card-canvas';
       cv.width = 72;
       cv.height = 56;
-      var nm = document.createElement('span');
-      nm.className = 'card-name';
-      nm.textContent = a.name;
       card.appendChild(cv);
-      card.appendChild(nm);
       card.addEventListener('click', function() {
         toggleSelect(a.id);
       });
@@ -1621,7 +1623,7 @@ function renderRace() {
     groundShadow(ctx);
     if (raceTheme && raceTheme.scene === 'night') nightGlow(ctx);
     rc.animal.paint(ctx, lf);
-    bodyShade(ctx);
+    if (!rc.animal.paint.isImage) bodyShade(ctx);
     ctx.restore();
   }
 
