@@ -820,8 +820,6 @@ function buildSelection() {
     })(i);
   }
   selected = {};
-  toggleSelect('yoshi');
-  toggleSelect('sheep');
   updateStartButton();
 }
 
@@ -905,8 +903,8 @@ function startRace(ids) {
   finishOrder = 0;
   legFrame = 0;
   lastLegSwap = 0;
-  resizeCanvas();
   showScreen(screenRace);
+  resizeCanvas();
   modalResult.classList.remove('show');
   runCountdown();
 }
@@ -936,6 +934,7 @@ function beginRunning() {
   raceState = 'running';
   raceT0 = performance.now();
   lastLegSwap = raceT0;
+  resizeCanvas();
   rafId = requestAnimationFrame(raceLoop);
 }
 
