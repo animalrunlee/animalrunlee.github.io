@@ -149,8 +149,9 @@ body{
 /* ── Mobile: 레이스 화면이 화면을 꽉 채우도록 (터치 기기) ── */
 @media (hover: none){
   .canvas-wrap{
+    /* inset:0으로만 채움 — vw/vh는 뷰포트 기준이라 회전된 래퍼에서 강제로 포트레이트 크기가 되어
+       캔버스가 잘려버림. fixed의 실제 containing block(회전된 rotateWrapper)을 정확히 채우도록 함 */
     position:fixed;inset:0;
-    width:100vw;height:100vh;
     max-width:none;aspect-ratio:auto;
     border:none;border-radius:0;box-shadow:none;
   }
