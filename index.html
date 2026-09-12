@@ -500,15 +500,6 @@ function bodyShade(ctx2) {
   ctx2.ellipse(0, -17, 16, 16, 0, 0, Math.PI * 2);
   ctx2.fill();
 }
-function nightGlow(ctx2) {
-  var grd = ctx2.createRadialGradient(0, -18, 1, 0, -18, 25);
-  grd.addColorStop(0, 'rgba(254,243,199,0.32)');
-  grd.addColorStop(1, 'rgba(254,243,199,0)');
-  ctx2.fillStyle = grd;
-  ctx2.beginPath();
-  ctx2.arc(0, -18, 25, 0, Math.PI * 2);
-  ctx2.fill();
-}
 function legPair(ctx2, w, h, color, spread, frame) {
   var backX = -spread;
   var frontX = spread;
@@ -1615,7 +1606,6 @@ function renderRace() {
     ctx.translate(sx, laneBottom - 17 * s + bob * s);
     ctx.scale(s, s);
     groundShadow(ctx);
-    if (raceTheme && raceTheme.scene === 'night') nightGlow(ctx);
     rc.animal.paint(ctx, lf);
     if (!rc.animal.paint.isImage) bodyShade(ctx);
     ctx.restore();
