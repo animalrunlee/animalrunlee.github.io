@@ -882,6 +882,8 @@ var rafId = 0;
 var countdownChain = [];
 var finishOrder = 0;
 var lastRaceRacers = [];
+/* 경주 중 랜덤 가속/감속 페이즈 — 느려졌다 빨라졌다 반복 */
+var SPEED_PHASES = [0.55, 0.8, 1.0, 1.2, 1.45];
 
 function startRace(ids) {
   lastRaceRacers = ids.slice();
@@ -891,7 +893,9 @@ function startRace(ids) {
     if (!a) continue;
     racers.push({
       animal: a,
-      ability: 0.90 + Math.random() * 0.20,
+      ability: 0.92 + Math.random() * 0.16,
+      phaseMult: 1,
+      phaseLeft: 0,
       progress: 0,
       finished: false,
       finishRank: 0,
@@ -971,8 +975,12 @@ function updateRacers(ts) {
     for (var k = 0; k < racers.length; k++) {
       var rc = racers[k];
       if (rc.finished) continue;
-      var burst = 0.72 + Math.random() * 0.56;
-      var speed = baseSpeed * rc.ability * burst;
+      if (rc.phaseLeft <= 0) {
+        rc.phaseMult = SPEED_PHASES[Math.floor(Math.random() * SPEED_PHASES.length)];
+        rc.phaseLeft = 30 + Math.floor(Math.random() * 61);
+      }
+      rc.phaseLeft--;
+      var speed = baseSpeed * rc.ability * rc.phaseMult * (0.92 + Math.random() * 0.16);
       if (rc.progress === maxP && maxP > 5) speed *= 0.88;
       if (rc.progress === minP && racers.length > 2) speed *= 1.12;
       rc.progress += speed;
@@ -1118,9 +1126,6 @@ function renderRace() {
 /* ═══════════════════════════════════════
    RESULTS
    ═══════════════════════════════════════ */
-function fmtT(ms) {
-  return (ms / 1000).toFixed(1) + '초';
-}
 var MEDALS = ['🥇', '🥈', '🥉'];
 
 function showResult() {
@@ -1158,13 +1163,9 @@ function showResult() {
       var nm = document.createElement('span');
       nm.className = 'row-name';
       nm.textContent = r2.animal.name;
-      var tm = document.createElement('span');
-      tm.className = 'row-time';
-      tm.textContent = r2.finishTime > 0 ? fmtT(r2.finishTime) : '';
       row.appendChild(medal);
       row.appendChild(cv);
       row.appendChild(nm);
-      row.appendChild(tm);
       resultTable.appendChild(row);
       drawSprite(cv, r2.animal, 0);
     })(j);
