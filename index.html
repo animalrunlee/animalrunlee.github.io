@@ -158,8 +158,6 @@ body{
 .sel-header{padding:var(--space-4) 0 var(--space-2);text-align:center;flex-shrink:0}
 .sel-title{font-size:clamp(26px,6vw,40px);font-weight:var(--weight-extrabold);color:var(--text);line-height:1.2;letter-spacing:-0.5px}
 .sel-title .accent{color:var(--accent-animalrun)}
-.sel-sub{font-size:var(--text-lg);color:var(--text-secondary);margin-top:var(--space-1);font-weight:var(--weight-bold)}
-.sel-sub small{font-size:var(--text-sm);color:var(--text-muted);font-weight:var(--weight-regular)}
 
 .animal-grid{
   display:grid;
@@ -215,14 +213,21 @@ body{
   transition:all var(--transition-base);line-height:1.2;-webkit-tap-highlight-color:transparent;
 }
 .btn-portal:active{background:var(--border-thin);transform:scale(0.98)}
+.btn-portal-inline{
+  width:auto;min-height:40px;padding:var(--space-1) var(--space-4);
+  font-size:var(--text-sm);border-radius:999px;
+}
+.sel-title-row{display:flex;align-items:center;justify-content:center;width:100%;position:relative;min-height:44px}
+.sel-title-row .btn-portal-inline{position:absolute;right:0;top:50%;transform:translateY(-50%)}
 
 /* ── Race screen ── */
-.screen-race{overflow:hidden;padding-bottom:0;touch-action:none;position:relative}
+.screen-race{overflow:hidden;padding-bottom:0;touch-action:none;position:relative;display:flex;align-items:center;justify-content:center}
 .canvas-wrap{
-  position:relative;width:100%;flex:1;min-height:0;
+  position:relative;width:100%;max-width:calc(100vw*16/9);
+  aspect-ratio:16/9;flex:none;
   border:3px solid var(--border-thick);border-radius:var(--radius-lg);
   box-shadow:var(--shadow-lg);overflow:hidden;touch-action:none;
-  -webkit-tap-highlight-color:transparent;margin:var(--space-1) auto 0;
+  -webkit-tap-highlight-color:transparent;
 }
 .canvas-wrap canvas{display:block;width:100%;height:100%}
 .hud{
@@ -318,14 +323,15 @@ button:focus-visible{outline:3px solid var(--accent-animalrun);outline-offset:2p
     <!-- Screen: Selection -->
     <section id="screenSelect" class="screen show" aria-label="동물 선택 화면">
       <div class="sel-header">
-        <h1 class="sel-title">🐾 <span class="accent">동물 경주</span></h1>
-        <p class="sel-sub">2마리 이상 골라서 달려요!<br><small>완전 랜덤 · 누가 이길지 아무도 몰라요</small></p>
+        <div class="sel-title-row">
+          <h1 class="sel-title">🐾 <span class="accent">애니멀런</span></h1>
+          <button class="btn-portal btn-portal-inline" type="button">🎮 다른 게임하기</button>
+        </div>
       </div>
       <div id="animalGrid" class="animal-grid"></div>
-      <div class="sel-actions">
-        <button id="btnStart" class="btn-start" type="button" disabled><span class="btn-cnt">경주 시작!</span></button>
-        <button class="btn-portal" type="button">🎮 다른 게임하기</button>
-      </div>
+<div class="sel-actions">
+      <button id="btnStart" class="btn-start" type="button" disabled><span class="btn-cnt">경주 시작!</span></button>
+    </div>
     </section>
 
     <!-- Screen: Race -->
@@ -774,7 +780,7 @@ function drawSprite(canvas2, animal, legFrame) {
   ctx2.clearRect(0, 0, w, h);
   var s = Math.min(w, h) / 52;
   ctx2.save();
-  ctx2.translate(w / 2, h - 3);
+  ctx2.translate(w / 2, h - 1 - 17 * s);
   ctx2.scale(s, s);
   animal.paint(ctx2, legFrame);
   ctx2.restore();
@@ -883,6 +889,11 @@ var countdownChain = [];
 var finishOrder = 0;
 var lastRaceRacers = [];
 /* 경주 중 랜덤 가속/감속 페이즈 — 느려졌다 빨라졌다 반복 */
+var camX = 0;              // 레이스 카메라 기준점 (팩 중앙 추적)
+var camZ = 1;              // 레이스 카메라 줌 (전 동물 뷰에 맞춤)
+var TRACK_MULT = 6;        // 트랙 길이 = 화면 폭의 6배
+var DIST_MARK = 128;       // 배경 거리 마커 간격
+
 var SPEED_PHASES = [0.55, 0.8, 1.0, 1.2, 1.45];
 
 function startRace(ids) {
@@ -1032,95 +1043,126 @@ function renderRace() {
   var H = canvasWrap.clientHeight;
   ctx.clearRect(0, 0, W, H);
   var n = racers.length;
-  var laneH = H / n;
-  var padL = 6;
-  var finishZoneW = 30;
-  var trackL = padL;
-  var trackR = W - finishZoneW;
-  var trackW = trackR - trackL;
+  var screenLaneH = H / n;
 
+  // 롱 트랙 — 결승선(체커 존)은 트랙 맨 끝에만 존재
+  var trackLen = Math.max(W * TRACK_MULT, 900);
+  var finishZoneW = 50;
+  var padL = 60;
+  var trackL = padL;
+  var finishX = trackLen - finishZoneW;
+  var trackW = finishX - trackL;
+
+  // 동물 위치(월드 좌표)
+  var xs = [];
+  for (var ix = 0; ix < n; ix++) {
+    xs.push(trackL + (racers[ix].progress / 100) * trackW);
+  }
+  var pMin = xs[0], pMax = xs[0];
+  for (var ix2 = 1; ix2 < n; ix2++) {
+    if (xs[ix2] < pMin) pMin = xs[ix2];
+    if (xs[ix2] > pMax) pMax = xs[ix2];
+  }
+
+  // 카메라 기준점 = 팩의 중앙 — 모든 동물이 뷰 안에 들어오도록 줌 조절
+  // 양끝에 패딩(70px)을 둬서 동물이 뷰 가장자리에서 잘리지 않게 함
+  var spread = pMax - pMin;
+  var targetZoom = Math.max(0.4, Math.min(1, (W - 140) / Math.max(spread, W * 0.5)));
+  camZ += (targetZoom - camZ) * 0.12;
+  if (Math.abs(targetZoom - camZ) < 0.005) camZ = targetZoom;
+  var worldW = W / camZ;
+  var worldH = H / camZ;
+  var laneH = worldH / n;
+  var packCenter = (pMin + pMax) / 2;
+  var camTarget = Math.max(worldW / 2, Math.min(trackLen - worldW / 2 + 70, packCenter));
+  camX += (camTarget - camX) * 0.12;
+  if (Math.abs(camTarget - camX) < 1) camX = camTarget;
+
+  ctx.save();
+  ctx.scale(camZ, camZ);
+  ctx.translate(W / (2 * camZ) - camX, 0);
+
+  // 레인 배경 — 트랙 전체 길이
   for (var i = 0; i < n; i++) {
     var y0 = i * laneH;
     ctx.fillStyle = i % 2 === 0 ? '#FEF3C7' : '#FDE68A';
-    ctx.fillRect(0, y0, W, laneH);
+    ctx.fillRect(0, y0, trackLen, laneH);
     ctx.strokeStyle = '#B45309';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(0, y0 + laneH);
-    ctx.lineTo(W, y0 + laneH);
+    ctx.lineTo(trackLen, y0 + laneH);
     ctx.stroke();
   }
 
+  // 배경 거리 마커 — 화면이 쭉 지나가는 느낌
+  ctx.fillStyle = 'rgba(180,83,9,0.16)';
+  for (var m = DIST_MARK; m < finishX; m += DIST_MARK) {
+    ctx.fillRect(m, 0, 2, worldH);
+  }
+
+  // 출발선
   ctx.strokeStyle = '#1F2937';
   ctx.lineWidth = 3;
   ctx.beginPath();
   ctx.moveTo(trackL, 0);
-  ctx.lineTo(trackL, H);
+  ctx.lineTo(trackL, worldH);
   ctx.stroke();
 
-  var checkerSize = finishZoneW / 2;
+  // 결승선 (체커 존) — 트랙 맨 끝
   ctx.fillStyle = '#FFFFFF';
-  ctx.fillRect(trackR, 0, finishZoneW, H);
+  ctx.fillRect(finishX, 0, finishZoneW, worldH);
+  var checkerSize = finishZoneW / 2;
   ctx.fillStyle = '#111827';
-  for (var r = 0; r < (H + checkerSize - 1) / checkerSize; r++) {
+  for (var r = 0; r < (worldH + checkerSize - 1) / checkerSize; r++) {
     for (var c = 0; c < 2; c++) {
       if ((r + c) % 2 === 0) {
-        ctx.fillRect(trackR + c * checkerSize, r * checkerSize, checkerSize, checkerSize);
+        ctx.fillRect(finishX + c * checkerSize, r * checkerSize, checkerSize, checkerSize);
       }
     }
   }
   ctx.strokeStyle = '#1F2937';
   ctx.lineWidth = 2;
-  ctx.strokeRect(trackR, 0, finishZoneW, H);
+  ctx.strokeRect(finishX, 0, finishZoneW, worldH);
 
   var fontBase = 12;
-  if (laneH > 100) fontBase = 18;
-  else if (laneH > 60) fontBase = 15;
+  if (screenLaneH > 100) fontBase = 18;
+  else if (screenLaneH > 60) fontBase = 15;
 
+  // 동물 — 발(17)이 레인 바닥(레일)에 정확히 닿도록 배치, 완주자는 결승선에서 정지
   for (var i2 = 0; i2 < n; i2++) {
     var rc = racers[i2];
-    var laneY = i2 * laneH + laneH / 2;
+    var laneBottom = (i2 + 1) * laneH;
     var sx = trackL + (rc.progress / 100) * trackW;
     var s = Math.max(0.7, Math.min(2.0, laneH / 52));
+    var lf = rc.progress >= 100 ? 0 : legFrame;
     ctx.save();
-    ctx.translate(sx, laneY + laneH * 0.35);
+    ctx.translate(sx, laneBottom - 17 * s);
     ctx.scale(s, s);
-    rc.animal.paint(ctx, legFrame);
+    rc.animal.paint(ctx, lf);
     ctx.restore();
-    ctx.fillStyle = 'rgba(255,255,255,0.92)';
-    rr(ctx, trackL, i2 * laneH + 2, 0, 0, 4);
-    ctx.fill();
-    ctx.font = 'bold ' + fontBase + 'px ' + 'sans-serif';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-    var tw = ctx.measureText(rc.animal.name).width;
-    ctx.fillStyle = 'rgba(31,41,55,0.85)';
-    rr(ctx, trackL, i2 * laneH + 4, tw + 14, Math.min(laneH - 8, 26), 13);
-    ctx.fill();
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillText(rc.animal.name, trackL + 7, i2 * laneH + 4 + Math.min(laneH - 8, 26) / 2);
   }
 
-  var flagY = H * 0.10;
-  ctx.strokeStyle = '#111827';
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(trackR, flagY + 26);
-  ctx.lineTo(trackR, flagY - 10);
-  ctx.stroke();
-  ctx.fillStyle = '#111827';
-  for (var f = 0; f < 2; f++) {
-    for (var g = 0; g < 2; g++) {
-      if ((f + g) % 2 === 0) {
-        ctx.fillRect(trackR + f * 7, flagY - 10 + g * 7, 7, 7);
-      } else {
-        ctx.fillRect(trackR + f * 7 + 7, flagY - 10 + g * 7 + 0, 0, 0);
-      }
-    }
+  ctx.restore();
+
+  // 이름 라벨 — 화면 좌표로 그려 텍스트가 항상 선명하게 유지
+  for (var i3 = 0; i3 < n; i3++) {
+    var rc2 = racers[i3];
+    var sx2 = trackL + (rc2.progress / 100) * trackW;
+    var sxScreen = (sx2 - camX) * camZ + W / 2;
+    ctx.font = 'bold ' + fontBase + 'px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    var tw = ctx.measureText(rc2.animal.name).width;
+    var labelH = Math.min(screenLaneH - 8, 26);
+    var labelX = Math.max(4, sxScreen - tw - 16);
+    var labelY = i3 * screenLaneH + 4;
+    ctx.fillStyle = 'rgba(31,41,55,0.85)';
+    rr(ctx, labelX, labelY, tw + 14, labelH, 13);
+    ctx.fill();
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillText(rc2.animal.name, labelX + 7, labelY + labelH / 2);
   }
-  ctx.fillStyle = '#FFFFFF';
-  ctx.fillRect(trackR + 7, flagY - 10, 7, 7);
-  ctx.fillRect(trackR, flagY - 3, 7, 7);
 }
 
 /* ═══════════════════════════════════════
