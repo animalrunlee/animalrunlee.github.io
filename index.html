@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script>try{if(('ontouchstart' in window)||(navigator.maxTouchPoints>0)&&document.documentElement.className.indexOf('is-touch')<0){document.documentElement.className+=' is-touch'}}catch(e){}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -128,9 +129,13 @@ body{
 }
 #rotateWrapper{width:100%;height:100%;display:flex;flex-direction:column;min-height:0}
 
-/* ── Mobile 90 auto-rotation: portrait touch devices ── */
-@media (orientation: portrait) and (hover: none){
-  #rotateWrapper{
+/* ── Mobile 90 auto-rotation: portrait touch devices ──
+   미디어쿼리 (hover:none) 만으로는 일부 모바일 WebView/브라우저에서 터치를
+   감지하지 못해 전체 화면(풀블리드) CSS가 안 걸리는 경우가 있음.
+   head 의 JS 터치 감지(is-touch 클래스) 기반으로 동작시켜 어떤 모바일에서도
+   화면을 꽉 채우도록 함 */
+@media (orientation: portrait){
+  html.is-touch #rotateWrapper{
     position:fixed;
     top:50%;left:50%;
     width:100vh;height:100vw;
@@ -144,14 +149,12 @@ body{
    제거: 노치/홈바 쪽에 검은 띠가 보이지 않도록 화면을 꽉 채운다 */
 
 /* ── Mobile: 레이스 화면이 화면을 꽉 채우도록 (터치 기기) ── */
-@media (hover: none){
-  .canvas-wrap{
-    /* inset:0으로만 채움 — vw/vh는 뷰포트 기준이라 회전된 래퍼에서 강제로 포트레이트 크기가 되어
-       캔버스가 잘려버림. fixed의 실제 containing block(회전된 rotateWrapper)을 정확히 채우도록 함 */
-    position:fixed;inset:0;
-    max-width:none;aspect-ratio:auto;
-    border:none;border-radius:0;box-shadow:none;
-  }
+html.is-touch .canvas-wrap{
+  /* inset:0으로만 채움 — vw/vh는 뷰포트 기준이라 회전된 래퍼에서 강제로 포트레이트 크기가 되어
+     캔버스가 잘려버림. fixed의 실제 containing block(회전된 rotateWrapper)을 정확히 채우도록 함 */
+  position:fixed;inset:0;
+  max-width:none;aspect-ratio:auto;
+  border:none;border-radius:0;box-shadow:none;
 }
 
 .container{
