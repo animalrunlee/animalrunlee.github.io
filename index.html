@@ -1239,12 +1239,12 @@ var TRACK_MULT = 6;        // 트랙 길이 = 화면 폭의 6배
 var DIST_MARK = 128;       // 배경 거리 마커 간격
 
 var THEMES = [
-  { scene:'beach',  bg:['#7EC8E3','#A8DCE7','#FEF3C7'], lane:['rgba(255,249,224,0.92)','rgba(253,230,138,0.92)'], border:'#D97706', marker:'rgba(180,83,9,0.10)', ground:'#FCD34D', ground2:'#F59E0B' },
-  { scene:'field',  bg:['#87CEEB','#BFE3B4','#FDE68A'], lane:['rgba(240,253,244,0.92)','rgba(220,252,231,0.92)'], border:'#16A34A', marker:'rgba(22,163,74,0.10)', ground:'#22C55E', ground2:'#16A34A' },
-  { scene:'snow',   bg:['#A8C4DE','#D7E3F0','#F8FAFC'], lane:['rgba(224,242,254,0.92)','rgba(191,219,254,0.92)'], border:'#0284C7', marker:'rgba(2,132,199,0.10)', ground:'#E2E8F0', ground2:'#CBD5E1' },
-  { scene:'sunset', bg:['#FDBA74','#FB7185','#7E22CE'], lane:['rgba(255,247,205,0.92)','rgba(254,243,199,0.92)'], border:'#B45309', marker:'rgba(180,83,9,0.10)', ground:'#581C87', ground2:'#3B0764' },
-  { scene:'night',  bg:['#0F172A','#1E293B','#334155'], lane:['rgba(51,65,85,0.92)','rgba(71,85,105,0.92)'], border:'#94A3B8', marker:'rgba(148,163,184,0.12)', ground:'#020617', ground2:'#0F172A' },
-  { scene:'forest', bg:['#86EFAC','#4ADE80','#166534'], lane:['rgba(240,253,244,0.92)','rgba(220,252,231,0.92)'], border:'#15803D', marker:'rgba(21,128,61,0.10)', ground:'#14532D', ground2:'#166534' }
+  { scene:'beach',  bg:['#7EC8E3','#A8DCE7','#FEF3C7'], lane:['rgba(255,249,224,0.92)','rgba(253,230,138,0.92)'], border:'#D97706', marker:'rgba(180,83,9,0.30)', ground:'#FCD34D', ground2:'#F59E0B' },
+  { scene:'field',  bg:['#87CEEB','#BFE3B4','#FDE68A'], lane:['rgba(240,253,244,0.92)','rgba(220,252,231,0.92)'], border:'#16A34A', marker:'rgba(22,163,74,0.30)', ground:'#22C55E', ground2:'#16A34A' },
+  { scene:'snow',   bg:['#A8C4DE','#D7E3F0','#F8FAFC'], lane:['rgba(224,242,254,0.92)','rgba(191,219,254,0.92)'], border:'#0284C7', marker:'rgba(2,132,199,0.30)', ground:'#E2E8F0', ground2:'#CBD5E1' },
+  { scene:'sunset', bg:['#FDBA74','#FB7185','#7E22CE'], lane:['rgba(255,247,205,0.92)','rgba(254,243,199,0.92)'], border:'#B45309', marker:'rgba(180,83,9,0.30)', ground:'#581C87', ground2:'#3B0764' },
+  { scene:'night',  bg:['#0F172A','#1E293B','#334155'], lane:['rgba(51,65,85,0.92)','rgba(71,85,105,0.92)'], border:'#94A3B8', marker:'rgba(148,163,184,0.32)', ground:'#020617', ground2:'#0F172A' },
+  { scene:'forest', bg:['#86EFAC','#4ADE80','#166534'], lane:['rgba(240,253,244,0.92)','rgba(220,252,231,0.92)'], border:'#15803D', marker:'rgba(21,128,61,0.30)', ground:'#14532D', ground2:'#166534' }
 ];
 var raceTheme = null;
 
@@ -1579,12 +1579,17 @@ function renderRace() {
   ctx.fillStyle = raceTheme ? raceTheme.lane[0] : '#FEF3C7';
   ctx.fillRect(0, skyH, trackLen, n * laneH);
 
-  // 배경 거리 마커 — 흐릿하게 잔상 느낌만
+  // 배경 거리 마커 — 진행감이 확실히 보이도록 (보조 눈금 + 4개마다 주요 눈금 2단계)
   ctx.save();
-  ctx.globalAlpha = 0.35;
-  ctx.fillStyle = raceTheme ? raceTheme.marker : 'rgba(180,83,9,0.16)';
+  ctx.globalAlpha = 0.55;
+  ctx.fillStyle = raceTheme ? raceTheme.marker : 'rgba(180,83,9,0.36)';
   for (var m = DIST_MARK; m < finishX; m += DIST_MARK) {
     ctx.fillRect(m, 0, 1, worldH);
+  }
+  ctx.globalAlpha = 0.95;
+  ctx.fillStyle = raceTheme ? raceTheme.marker : 'rgba(180,83,9,0.6)';
+  for (var m2 = DIST_MARK * 4; m2 < finishX; m2 += DIST_MARK * 4) {
+    ctx.fillRect(m2 - 1, 0, 2, worldH);
   }
   ctx.restore();
 
