@@ -369,7 +369,9 @@ var ANIMALS = [
   { id:'gorilla', name:'고릴라', color:'#374151', paint:null }
 ];
 
-var SPRITE_FILES = { yoshi:'sprites/dinosaur.png', sheep:'sprites/sheep.png', donkey:'sprites/donkey.png', turtle:'sprites/turtle.png', penguin:'sprites/penguin.png', tiger:'sprites/tiger.png', wolf:'sprites/wolf.png', bear:'sprites/bear.png', lion:'sprites/lion.png', gorilla:'sprites/gorilla.png' };
+// sprites/v2/ — 파일명이 같은 채로 내용만 교체하면 브라우저/CDN이 예전 캐시 이미지를 재사용
+// 하므로(예전 '예전 동물' 노출), 버전 디렉터리로 옮겨 URL을 새로 만들었다. 구 URL은 삭제되어 404.
+var SPRITE_FILES = { yoshi:'sprites/v2/dinosaur.png', sheep:'sprites/v2/sheep.png', donkey:'sprites/v2/donkey.png', turtle:'sprites/v2/turtle.png', penguin:'sprites/v2/penguin.png', tiger:'sprites/v2/tiger.png', wolf:'sprites/v2/wolf.png', bear:'sprites/v2/bear.png', lion:'sprites/v2/lion.png', gorilla:'sprites/v2/gorilla.png' };
 var SPRITE_FLIP = {};
 
 function spriteBox(img) {
@@ -1284,7 +1286,8 @@ function startRace(ids) {
   var W0 = canvasWrap.clientWidth;
   var trackLen0 = Math.max(W0 * TRACK_MULT, 900);
   var packCenter0 = 60;
-  camX = Math.max(W0 / 2 - 70, Math.min(trackLen0 - W0 / 2 + 70, packCenter0));
+  // 왼쪽 인셋 120px — 출발 대기(카운트다운) 중 레인의 왼쪽이 화면 끝에 잘려 보이지 않도록 여유
+  camX = Math.max(W0 / 2 - 120, Math.min(trackLen0 - W0 / 2 + 70, packCenter0));
   rafId = requestAnimationFrame(raceLoop);
   runCountdown();
 }
@@ -1365,8 +1368,8 @@ function updateRacers(ts) {
       rc.progress += speed;
       // 화면 경계 통제 — 카메라 뷰 밖으로 나가려는 동물을 부드럽게 당겨 옴
       // (줌 고정 상태에서 팩이 퍼져도 모든 동물이 앵글 안에 머물도록)
-      var tw2 = Math.max(canvasWrap.clientWidth * TRACK_MULT, 900) * raceScale - 110;
-      var xr2 = 60 + (rc.progress / 100) * tw2;
+      var tw2 = Math.max(canvasWrap.clientWidth * TRACK_MULT, 900) * raceScale - 140;
+      var xr2 = 90 + (rc.progress / 100) * tw2;
       var halfW2 = canvasWrap.clientWidth / (2 * camZ);
       var vL = camX - halfW2 + 26;
       var vR = camX + halfW2 - 84;
@@ -1582,7 +1585,7 @@ function renderRace() {
   // 롱 트랙 — 결승선(체커 존)은 트랙 맨 끝에만 존재
   var trackLen = Math.max(W * TRACK_MULT, 900) * raceScale;
   var finishZoneW = 50;
-  var padL = 60;
+  var padL = 90;
   var trackL = padL;
   var finishX = trackLen - finishZoneW;
   var trackW = finishX - trackL;
@@ -1608,7 +1611,7 @@ function renderRace() {
   var groundH = worldH * 0.10;
   var laneH = (worldH - skyH - groundH) / n;
   var packCenter = (pMin + pMax) / 2;
-  var camTarget = Math.max(worldW / 2 - 70, Math.min(trackLen - worldW / 2 + 70, packCenter));
+  var camTarget = Math.max(worldW / 2 - 120, Math.min(trackLen - worldW / 2 + 70, packCenter));
   camX += (camTarget - camX) * 0.12;
   if (Math.abs(camTarget - camX) < 1) camX = camTarget;
 
