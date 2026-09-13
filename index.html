@@ -638,8 +638,9 @@ function startRace(ids) {
   var W0 = canvasWrap.clientWidth;
   var trackLen0 = Math.max(W0 * TRACK_MULT, 900);
   var packCenter0 = 60;
-  // 왼쪽 인셋 120px — 출발 대기(카운트다운) 중 레인의 왼쪽이 화면 끝에 잘려 보이지 않도록 여유
-  camX = Math.max(W0 / 2 - 120, Math.min(trackLen0 - W0 / 2 + 70, packCenter0));
+  // 출발 대기(카운트다운) 중 출발선이 화면 왼쪽 여유 56px에 오도록 카메라 고정.
+  // 화면 상대 여유라 좁은 모바일 화면에서도 레인이 화면 가장자리부터 채워져 꽉 차 보임
+  camX = Math.max(90 + W0 / 2 - 56, Math.min(trackLen0 - W0 / 2 + 70, packCenter0));
   rafId = requestAnimationFrame(raceLoop);
   runCountdown();
 }
@@ -963,7 +964,7 @@ function renderRace() {
   var groundH = worldH * 0.10;
   var laneH = (worldH - skyH - groundH) / n;
   var packCenter = (pMin + pMax) / 2;
-  var camTarget = Math.max(worldW / 2 - 120, Math.min(trackLen - worldW / 2 + 70, packCenter));
+  var camTarget = Math.max(trackL + worldW / 2 - 56, Math.min(trackLen - worldW / 2 + 70, packCenter));
   camX += (camTarget - camX) * 0.12;
   if (Math.abs(camTarget - camX) < 1) camX = camTarget;
 
