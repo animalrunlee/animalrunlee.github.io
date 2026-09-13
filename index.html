@@ -139,12 +139,9 @@ body{
     overflow:hidden;
   }
 }
-@supports(padding:max(0px)){
-  #rotateWrapper{
-    padding-left:max(0px,env(safe-area-inset-top));
-    padding-right:max(0px,env(safe-area-inset-bottom));
-  }
-}
+/* viewport-fit=cover 를 쓰지 않으므로 브라우저가 레이아웃 뷰포트를 이미
+   safe-area 안쪽으로 잡아줌 — 여기서 추가 패딩을 넣으면 이중 여백(패딩)이 생김.
+   제거: 노치/홈바 쪽에 검은 띠가 보이지 않도록 화면을 꽉 채운다 */
 
 /* ── Mobile: 레이스 화면이 화면을 꽉 채우도록 (터치 기기) ── */
 @media (hover: none){
@@ -1235,6 +1232,7 @@ var lastRaceRacers = [];
 var camX = 0;              // 레이스 카메라 기준점 (팩 중앙 추적)
 var camZ = 1;              // 레이스 카메라 줌 (전 동물 뷰에 맞춤)
 var maxSpreadSeen = 0;     // 지금까지 본 팩 최대 퍼짐 — 결승 직전 줌인(확대) 방지용
+var raceScale = 1;         // n(마릿수)에 따른 동물 크기 스케일 — 트랙 길이에 곱해 체감 속도 균일화
 var TRACK_MULT = 6;        // 트랙 길이 = 화면 폭의 6배
 var DIST_MARK = 128;       // 배경 거리 마커 간격
 
@@ -1274,6 +1272,10 @@ function startRace(ids) {
   lastLegSwap = 0;
   showScreen(screenRace);
   resizeCanvas();
+  // 동물 크기 스케일 = 레인 한 칸(0.75*H/n)에 52유닛 규격이 맞도록 — n이 적을수록 크게
+  // 트랙 길이에도 곱해져서 동물이 크면 트랙도 비례해 길어짐 → 몸-길이당 속도(체감 속도)가
+  // 마릿수와 무관하게 동일해져 '적게 고르면 조금만 달리는' 느낌이 사라짐
+  raceScale = Math.min(3, Math.max(0.5, (0.75 * canvasWrap.clientHeight) / (52 * racers.length)));
   modalResult.classList.remove('show');
   // 카운트다운 중에도 출발선에서 대기하는 동물들이 보이도록 카메라/테마를 먼저 고정하고 렌더 시작
   raceState = 'countdown';
@@ -1532,7 +1534,7 @@ function renderRace() {
   var n = racers.length;
 
   // 롱 트랙 — 결승선(체커 존)은 트랙 맨 끝에만 존재
-  var trackLen = Math.max(W * TRACK_MULT, 900);
+  var trackLen = Math.max(W * TRACK_MULT, 900) * raceScale;
   var finishZoneW = 50;
   var padL = 60;
   var trackL = padL;
@@ -1619,7 +1621,7 @@ function renderRace() {
     var rc = racers[i2];
     var laneBottom = skyH + (i2 + 1) * laneH;
     var sx = trackL + (rc.progress / 100) * trackW;
-    var s = Math.max(0.7, Math.min(2.0, laneH / 52));
+    var s = Math.min(3.0, Math.max(0.5, laneH / 52));
     var lf = rc.progress >= 100 ? 0 : legFrame;
     var bob = lf === 1 ? -1.2 : (lf === 3 ? 1.1 : 0);
     ctx.save();
@@ -1636,7 +1638,7 @@ function renderRace() {
     var rc3 = racers[ir];
     if (rc3.finishRank <= 0) continue;
     var lb3 = skyH + (ir + 1) * laneH;
-    var s3 = Math.max(0.7, Math.min(2.0, laneH / 52));
+    var s3 = Math.min(3.0, Math.max(0.5, laneH / 52));
     var bx3 = trackL + (rc3.progress / 100) * trackW;
     var r3 = Math.max(10, laneH * 0.3);
     var by3 = lb3 - 17 * s3 - r3 - 4;
