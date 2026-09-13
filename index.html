@@ -1580,16 +1580,17 @@ function renderRace() {
   ctx.fillRect(0, skyH, trackLen, n * laneH);
 
   // 배경 거리 마커 — 진행감이 확실히 보이도록 (보조 눈금 + 4개마다 주요 눈금 2단계)
+  // 레인 영역(skyH ~ skyH+n*laneH) 안에서만 그려 하늘/땅까지 넘치지 않게 함
   ctx.save();
   ctx.globalAlpha = 0.55;
   ctx.fillStyle = raceTheme ? raceTheme.marker : 'rgba(180,83,9,0.36)';
   for (var m = DIST_MARK; m < finishX; m += DIST_MARK) {
-    ctx.fillRect(m, 0, 1, worldH);
+    ctx.fillRect(m, skyH, 1, n * laneH);
   }
   ctx.globalAlpha = 0.95;
   ctx.fillStyle = raceTheme ? raceTheme.marker : 'rgba(180,83,9,0.6)';
   for (var m2 = DIST_MARK * 4; m2 < finishX; m2 += DIST_MARK * 4) {
-    ctx.fillRect(m2 - 1, 0, 2, worldH);
+    ctx.fillRect(m2 - 1, skyH, 2, n * laneH);
   }
   ctx.restore();
 
