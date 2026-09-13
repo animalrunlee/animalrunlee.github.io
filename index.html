@@ -1550,14 +1550,10 @@ function renderRace() {
     if (xs[ix2] > pMax) pMax = xs[ix2];
   }
 
-  // 카메라 기준점 = 팩의 중앙 — 모든 동물이 뷰 안에 들어오도록 줌 조절
-  // 양끝에 패딩(70px)을 둬서 동물이 뷰 가장자리에서 잘리지 않게 함
-  // maxSpreadSeen을 기억해두면 팩이 모이는 결승 직전에 줌인(확대)되는 느낌이 없음
-  var spread = pMax - pMin;
-  if (spread > maxSpreadSeen) maxSpreadSeen = spread;
-  var targetZoom = Math.max(0.4, Math.min(1, (W - 140) / Math.max(spread, W * 0.5, maxSpreadSeen)));
-  camZ += (targetZoom - camZ) * 0.12;
-  if (Math.abs(targetZoom - camZ) < 0.005) camZ = targetZoom;
+  // 카메라 줌 고정(1.0) — 선택 마릿수/팩 퍼짐과 무관하게 같은 앵글·같은 화면 속도
+  // (줌이 퍼짐을 따라가면 마릿수가 많을수록 줌아웃되어 동물·배경이 느려 보이는 문제 제거.
+  //  화면 속도 = 월드 속도 × 줌 이므로 줌을 고정해야 어떤 조합에서도 동일한 속도감이 됨)
+  camZ = 1;
   var worldW = W / camZ;
   var worldH = H / camZ;
   var skyH = worldH * 0.15;
