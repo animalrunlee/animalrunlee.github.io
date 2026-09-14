@@ -161,6 +161,10 @@ html.is-touch .canvas-wrap{
   width:100%;max-width:640px;margin:0 auto;padding:0 var(--space-3);
   display:flex;flex-direction:column;flex:1;min-height:0;
 }
+/* ── Desktop/wide: 640px 제한 확장 — 터치(모바일)는 is-touch 규칙이 우선이라 영향 없음 ── */
+@media (min-width: 768px){
+  .container{max-width:1120px;padding:0 var(--space-5)}
+}
 .screen{display:none;flex-direction:column;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:max(var(--space-3),env(safe-area-inset-bottom))}
 .screen.show{display:flex}
 [hidden]{display:none !important}
